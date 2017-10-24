@@ -1,0 +1,149 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using CoursesApi.Repositories;
+using LibraryAPI.Models;
+using LibraryAPI.Models.EntityModels;
+using LibraryAPI.Models.ViewModels;
+using Newtonsoft.Json;
+
+namespace LibraryAPI.Repositories
+{
+    public class LibraryRepository : ILibraryRepository
+    {
+        private AppDataContext _db;
+        
+        public LibraryRepository(AppDataContext db)
+        {
+            _db = db;
+        }
+
+
+    /// <summary>
+	/// Fills the database tables Friends and Loans with data from JSON files
+    /// If the database is empty
+	/// </summary>
+        public void fillFriendsAndLoans(){
+            if(!_db.Friends.Any()){
+                using (StreamReader r = new StreamReader("friends.json"))
+                {
+                    string js = r.ReadToEnd();
+                    List<Vinur> Friends = JsonConvert.DeserializeObject<List<Vinur>>(js);
+                    foreach(var f in Friends){
+                        _db.Friends.Add(new Friend{
+                                ID = f.vinur_id,
+                                FirstName = f.fornafn,
+                                LastName = f.eftirnafn,
+                                Email = f.netfang,
+                                Address = f.heimilisfang
+                        });
+                        _db.SaveChanges();
+                        if(f.lanasafn != null){
+                            var l = f.lanasafn.ToList();
+                            foreach(var i in l){
+                                _db.Loans.Add(new Loan{
+                                    bookID = i.bok_id,
+                                    friendID = f.vinur_id,
+                                    DateBorrowed = i.bok_lanadagsetning
+                                });
+                            }
+                            _db.SaveChanges();
+                        }
+                    }
+                    _db.SaveChanges();
+                }
+            }
+            else{
+                return;
+            }
+        }
+
+    /// <summary>
+	/// Fills the database table books with data from JSON files
+    /// If the database is empty
+	/// </summary>
+        public void fillBooks(){
+            if(!_db.Books.Any()){
+                using (StreamReader r = new StreamReader("books.json"))
+                {
+                    string json = r.ReadToEnd();
+                    List<Bok> Books = JsonConvert.DeserializeObject<List<Bok>>(json);
+                    foreach(var b in Books){
+                        _db.Books.Add(new Book{
+                            ID = b.bok_id,
+                            Title = b.bok_titill,
+                            FirstName = b.fornafn_hofundar,
+                            LastName = b.eftirnafn_hofundar,
+                            DatePublished = b.utgafudagur,
+                            ISBN = b.ISBN
+                        });
+                    }
+                    _db.SaveChanges();
+                    }
+                }
+            else{
+                return;
+            }
+        }
+
+    ///<summary>
+	///Returns all books in the database 
+    ///(maybe it should only return books that are not being borrowed)
+	/// </summary>
+        public IEnumerable<BookViewModel> getAllBooks()
+        {
+            fillBooks();
+            var books = (from b in _db.Books
+                        select new BookViewModel{
+                            Title = b.Title,
+                            Author = b.FirstName + " " + b.LastName,
+                            DatePublished = b.DatePublished
+                        }).OrderBy(x => x.Title).ToList();
+            if(books == null){
+                return null;
+            }
+            else{
+                return books;
+            }
+        }
+
+        public IEnumerable<UserViewModel> getAllUsers()
+        {
+            fillFriendsAndLoans();
+            var users = (from f in _db.Friends
+                        select new UserViewModel{
+                            Name = f.FirstName + " " + f.LastName,
+                            Address = f.Address,
+                            Email = f.Email
+                        }).OrderBy(x => x.Name).ToList();
+            if(users == null){
+                return null;
+            }
+            else{
+                return users;
+            }
+        }
+
+        public BookDetailsViewModel getBookByID(int book_id)
+        {
+            var book = (from b in _db.Books
+                        where b.ID == book_id
+                        select new BookDetailsViewModel{
+                            Title = b.Title,
+                            Author = b.FirstName + " " + b.LastName,
+                            DatePublished = b.DatePublished,
+                            ISBN = b.ISBN,
+                            loanHistory = (from l in _db.Loans
+                                            where l.bookID == book_id
+                                            select l).ToList()
+                        }).SingleOrDefault();
+            if(book == null){
+                throw new ObjectNotFoundException("Book ID not found");
+            }
+            else{
+                return book;
+            }
+        }
+    }
+}
