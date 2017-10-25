@@ -14,6 +14,11 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
+        public void AddNewUser(Friend newUser)
+        {
+            _repo.AddNewUser(newUser);
+        }
+
         public IEnumerable<UserViewModel> GetAllUsers()
         {
             var users = _repo.GetAllUsers();

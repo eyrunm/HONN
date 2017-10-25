@@ -9,5 +9,6 @@ namespace LibraryAPI.Services
     {
         IEnumerable<UserViewModel> GetAllUsers();
         UserViewModel GetUserById(int userId);
+        void AddNewUser(Friend newUser);
     }
 }

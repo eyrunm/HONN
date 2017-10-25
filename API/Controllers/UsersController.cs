@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Repositories;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -45,10 +46,24 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
+        /// <summary>
+        /// Creates a new user 
+        /// </summary>
+        /// <param name="newUser">A model for the new user</param>
+        // POST api/users
+        [HttpPost("users")]
+        public IActionResult AddNewUser([FromBody]Friend newUser)
         {
+            if(!ModelState.IsValid){
+                return StatusCode(412);
+            }
+            try{
+                _userService.AddNewUser(newUser);
+                return StatusCode(201);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(412, e.Message);
+            }
         }
 
         // PUT api/values/5

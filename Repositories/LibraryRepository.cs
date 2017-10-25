@@ -64,6 +64,24 @@ namespace LibraryAPI.Repositories
             }
         }
 
+        /// <summary>
+        /// Adds a new user to the database
+        /// </summary>
+        public void AddNewUser(Friend newUser)
+        {
+            if(newUser == null){
+                throw new ObjectNotFoundException("User not valid");
+            }
+            var user = new Friend {
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email,
+                Address = newUser.Address
+            };
+            _db.Add(user);
+            _db.SaveChanges();
+        }
+
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty
