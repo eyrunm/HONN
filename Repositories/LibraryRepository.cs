@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CoursesApi.Repositories;
+using LibraryAPI.Repositories;
 using LibraryAPI.Models;
 using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
@@ -107,7 +107,9 @@ namespace LibraryAPI.Repositories
                 return books;
             }
         }
-
+    /// <summary>
+	/// Fetches all users in the database
+	/// </summary>
         public IEnumerable<UserViewModel> getAllUsers()
         {
             fillFriendsAndLoans();
@@ -125,6 +127,9 @@ namespace LibraryAPI.Repositories
             }
         }
 
+    /// <summary>
+	/// Gets a single book by its ID
+	/// </summary>
         public BookDetailsViewModel getBookByID(int book_id)
         {
             var book = (from b in _db.Books
@@ -146,6 +151,9 @@ namespace LibraryAPI.Repositories
             }
         }
 
+    /// <summary>
+	/// Adds a new book to the database
+	/// </summary>
         public void AddNewBook(Book newBook)
         {
             if(newBook == null){
@@ -160,6 +168,20 @@ namespace LibraryAPI.Repositories
             };
             _db.Add(book);
             _db.SaveChanges();
+        }
+
+        public void DeleteBookByID(int bookID)
+        {
+            var book = (from b in _db.Books
+                        where b.ID == bookID
+                        select b).SingleOrDefault();
+            if(book == null){
+                throw new ObjectNotFoundException("a book with this ID was not found");
+            }
+            else{
+                _db.Books.Remove(book);
+                _db.SaveChanges();
+            }
         }
     }
 }

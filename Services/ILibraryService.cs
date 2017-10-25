@@ -11,5 +11,6 @@ namespace LibraryAPI.Services
         IEnumerable<UserViewModel> getAllUsers();
         BookDetailsViewModel getBookByID(int book_id);
         void AddNewBook(Book newBook);
+        void DeleteBookByID(int bookID);
     }
 }

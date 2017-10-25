@@ -19,6 +19,11 @@ namespace LibraryAPI.Services
             _repo.AddNewBook(newBook);
         }
 
+        public void DeleteBookByID(int bookID)
+        {
+            _repo.DeleteBookByID(bookID);
+        }
+
         public IEnumerable<BookViewModel> getAllBooks(){
             var books = _repo.getAllBooks();
             if(books != null){
