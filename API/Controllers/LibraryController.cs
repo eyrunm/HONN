@@ -50,6 +50,10 @@ namespace LibraryAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a new book 
+        /// </summary>
+        /// <param name="newBook">A model for the new book</param>
         // POST api/books
         [HttpPost]
         [Route("books")]
@@ -67,11 +71,24 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        /// <summary>
+        /// Updates a book 
+        /// </summary>
+        /// <param name="bookID">An integer id for the book</param>
+        /// <param name="updatedBook">The updated values for the book</param>
+        // PUT api/books/5
+        [HttpPut("books/{bookID:int}")]
+        public IActionResult UpdateBookByID([FromBody] Book updatedBook, int bookID)
         {
-            
+            if (updatedBook == null) { return BadRequest(); }
+            if (!ModelState.IsValid) { return StatusCode(412); }
+            try{
+                var book =  _bookService.UpdateBookByID(updatedBook, bookID);
+                return Ok(book);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
         }
 
         // DELETE api/books/5

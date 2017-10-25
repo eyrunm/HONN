@@ -170,6 +170,9 @@ namespace LibraryAPI.Repositories
             _db.SaveChanges();
         }
 
+    /// <summary>
+	/// Removes the book with the given ID from the database
+	/// </summary>
         public void DeleteBookByID(int bookID)
         {
             var book = (from b in _db.Books
@@ -182,6 +185,30 @@ namespace LibraryAPI.Repositories
                 _db.Books.Remove(book);
                 _db.SaveChanges();
             }
+        }
+
+    /// <summary>
+	/// Updates the book with the given ID
+	/// </summary>
+        public Book UpdateBookByID(Book updatedBook, int bookID)
+        {
+            var book = (_db.Books.SingleOrDefault(b => b.ID == bookID));
+
+            if(book == null){
+                throw new ObjectNotFoundException("Book was not found");
+            }
+            
+            book.Title = updatedBook.Title;
+            book.FirstName = updatedBook.FirstName;
+            book.LastName = updatedBook.LastName;
+            book.DatePublished = updatedBook.DatePublished;
+            book.ISBN = updatedBook.ISBN;
+
+            _db.Update(book);
+            _db.SaveChanges();
+
+            return book;
+            
         }
     }
 }

@@ -25,7 +25,7 @@ namespace LibraryAPI.Services
         }
 
         public IEnumerable<BookViewModel> getAllBooks(){
-            var books = _repo.getAllBooks();
+            var books = _repo.GetAllBooks();
             if(books != null){
                 return books;
             }
@@ -36,9 +36,16 @@ namespace LibraryAPI.Services
 
         public BookDetailsViewModel getBookByID(int book_id)
         {
-           var book = _repo.getBookByID(book_id);
+           var book = _repo.GetBookByID(book_id);
 
            return book;
+        }
+
+        public Book UpdateBookByID(Book updatedBook, int bookID)
+        {
+            var book = _repo.UpdateBookByID(updatedBook, bookID);
+
+            return book;
         }
     }
 }

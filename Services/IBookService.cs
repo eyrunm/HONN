@@ -11,6 +11,6 @@ namespace LibraryAPI.Services
         BookDetailsViewModel getBookByID(int book_id);
         void AddNewBook(Book newBook);
         void DeleteBookByID(int bookID);
-        
+        Book UpdateBookByID(Book updatedBook, int bookID);
     }
 }
