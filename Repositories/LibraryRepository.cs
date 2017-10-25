@@ -181,6 +181,27 @@ namespace LibraryAPI.Repositories
             }
         }
 
+        /// <summary>
+        /// Updates the loan
+        /// </summary>
+        public Loan UpdateLoan(Loan updatedLoan, int userId, int bookId)
+        {
+             var loan = (_db.Loans.SingleOrDefault(l => l.friendID == userId && l.bookID == bookId));
+
+            if(loan == null){
+                throw new ObjectNotFoundException("Loan was not found");
+            }
+            
+            loan.friendID = updatedLoan.friendID;
+            loan.bookID = updatedLoan.bookID;
+            loan.DateBorrowed = updatedLoan.DateBorrowed;
+
+            _db.Update(loan);
+            _db.SaveChanges();
+
+            return loan;
+        }
+
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty

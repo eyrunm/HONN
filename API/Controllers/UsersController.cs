@@ -168,5 +168,27 @@ namespace LibraryAPI.Controllers
                 return StatusCode(412, e.Message);
             }
         }
+
+        /// <summary>
+        /// Updates the loan with new information
+        /// </summary>
+        /// <param name="userId">An integer id for the user</param>
+        /// <param name="bookId">An integer id for the book</param>
+        /// <param name="updatedLoan">The updated values for the loan</param>
+        // PUT api/users/1/books/18
+        [HttpPut]
+        [Route("users/{userId:int}/books/{bookId:int}")]
+        public IActionResult UpdateLoan([FromBody] Loan updatedLoan, int userId, int bookId) 
+        {
+            if (updatedLoan == null) { return BadRequest(); }
+            if (!ModelState.IsValid) { return StatusCode(412); }
+            try {
+                var loan =  _userService.UpdateLoan(updatedLoan, userId, bookId);
+                return Ok(loan);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
+        }
     }
 }

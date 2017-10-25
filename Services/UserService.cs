@@ -57,6 +57,12 @@ namespace LibraryAPI.Services
             _repo.ReturnBook(userId, bookId);
         }
 
+        public Loan UpdateLoan(Loan updatedLoan, int userId, int bookId)
+        {
+            var loan = _repo.UpdateLoan(updatedLoan, userId, bookId);
+            return loan;
+        }
+
         public Friend UpdateUserById(Friend updatedUser, int userId)
         {
             var user = _repo.UpdateUserById(updatedUser, userId);
