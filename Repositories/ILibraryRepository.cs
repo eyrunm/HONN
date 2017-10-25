@@ -17,6 +17,8 @@ namespace LibraryAPI.Repositories
         // User functions
         IEnumerable<UserViewModel> GetAllUsers();
         UserViewModel GetUserById(int userId);
+        void DeleteUserById(int userId);
         void AddNewUser(Friend newUser);
+        Friend UpdateUserById(Friend updatedUser, int userId);
     }
 }

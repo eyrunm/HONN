@@ -19,6 +19,11 @@ namespace LibraryAPI.Services
             _repo.AddNewUser(newUser);
         }
 
+        public void DeleteUserById(int userId)
+        {
+            _repo.DeleteUserById(userId);
+        }
+
         public IEnumerable<UserViewModel> GetAllUsers()
         {
             var users = _repo.GetAllUsers();
@@ -33,6 +38,12 @@ namespace LibraryAPI.Services
         public UserViewModel GetUserById(int userId)
         {
             var user = _repo.GetUserById(userId);
+            return user;
+        }
+
+        public Friend UpdateUserById(Friend updatedUser, int userId)
+        {
+            var user = _repo.UpdateUserById(updatedUser, userId);
             return user;
         }
     }

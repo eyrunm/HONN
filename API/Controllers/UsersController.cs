@@ -66,16 +66,44 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        /// <summary>
+        /// Updates a user 
+        /// </summary>
+        /// <param name="userId">An integer id for the user</param>
+        /// <param name="updatedUser">The updated values for the user</param>
+        // PUT api/users/5
+        [HttpPut("users/{userId:int}")]
+        public IActionResult UpdateUserById([FromBody] Friend updatedUser, int userId)
         {
+            if (updatedUser == null) { return BadRequest(); }
+            if (!ModelState.IsValid) { return StatusCode(412); }
+            try{
+                var user =  _userService.UpdateUserById(updatedUser, userId);
+                return Ok(user);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        /// <summary>
+        /// Deletes the user with the given id  
+        /// </summary>
+        /// <param name="userId">An integer id for the user</param>
+        // DELETE api/users/1
+        [HttpDelete("users/{userId:int}")]
+        public IActionResult DeleteUserById(int userId)
         {
+            if(!ModelState.IsValid){
+                return StatusCode(412);
+            }
+            try{
+                _userService.DeleteUserById(userId);
+                return StatusCode(204);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(412, e.Message);
+            }
         }
     }
 }

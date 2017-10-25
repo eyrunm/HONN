@@ -81,6 +81,45 @@ namespace LibraryAPI.Repositories
             _db.Add(user);
             _db.SaveChanges();
         }
+        
+        /// <summary>
+        /// Deletes user with given id from the database
+        /// </summary>
+        public void DeleteUserById(int userId) 
+        {
+            var user = (from u in _db.Friends
+                        where u.ID == userId
+                        select u).SingleOrDefault();
+            if(user == null){
+                throw new ObjectNotFoundException("a user with this ID was not found");
+            }
+            else{
+                _db.Friends.Remove(user);
+                _db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+	    /// Updates the user with the given ID
+	    /// </summary>
+        public Friend UpdateUserById(Friend updatedUser, int userId)
+        {
+            var user = (_db.Friends.SingleOrDefault(u => u.ID == userId));
+
+            if(user == null){
+                throw new ObjectNotFoundException("User was not found");
+            }
+            
+            user.FirstName = updatedUser.FirstName;
+            user.LastName = updatedUser.LastName;
+            user.Email = updatedUser.Email;
+            user.Address = updatedUser.Address;
+
+            _db.Update(user);
+            _db.SaveChanges();
+
+            return user;            
+        }
 
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files

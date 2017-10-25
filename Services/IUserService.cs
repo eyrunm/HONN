@@ -10,5 +10,7 @@ namespace LibraryAPI.Services
         IEnumerable<UserViewModel> GetAllUsers();
         UserViewModel GetUserById(int userId);
         void AddNewUser(Friend newUser);
+        void DeleteUserById(int userId);
+        Friend UpdateUserById(Friend updatedUser, int userId);
     }
 }
