@@ -124,5 +124,21 @@ namespace LibraryAPI.Controllers
                 return StatusCode(404, e.Message);
             }
         }
+
+        [HttpPost]
+        [Route("users/{userId:int}/books/{bookId:int}")]
+        public IActionResult AddBookToUser(int userId, int bookId)
+        {
+             if(!ModelState.IsValid){
+                return StatusCode(412);
+            }
+            try{
+                _userService.AddBookToUser(userId, bookId);
+                return StatusCode(201);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(412, e.Message);
+            }
+        }
     }
 }

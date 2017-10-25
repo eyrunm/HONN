@@ -146,6 +146,24 @@ namespace LibraryAPI.Repositories
             return books;
         }
 
+        /// <summary>
+        /// Registers a book to a user with these given ids
+        /// </summary>
+        public void AddBookToUser(int userId, int bookId) 
+        {
+            var user = _db.Friends.SingleOrDefault(u => u.ID == userId);
+            var book = _db.Books.SingleOrDefault(b => b.ID == bookId);
+
+            _db.Loans.Add(
+                    new Loan { 
+                        bookID = bookId, 
+                        friendID = userId, 
+                        DateBorrowed = DateTime.Now.ToString("yyyy-MM-dd") 
+                    }
+                );
+            _db.SaveChanges();
+        }
+
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty

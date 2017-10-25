@@ -13,7 +13,7 @@ namespace LibraryAPI.Repositories
         void AddNewBook(Book newBook);
         void DeleteBookByID(int bookID);
         Book UpdateBookByID(Book updatedBook, int bookID);
-
+        
         // User functions
         IEnumerable<UserViewModel> GetAllUsers();
         UserViewModel GetUserById(int userId);
@@ -21,5 +21,6 @@ namespace LibraryAPI.Repositories
         void AddNewUser(Friend newUser);
         Friend UpdateUserById(Friend updatedUser, int userId);
         IEnumerable<BookViewModel> GetBooksByUserId(int userId);
+        void AddBookToUser(int userId, int bookId);
     }
 }
