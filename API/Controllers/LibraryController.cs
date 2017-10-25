@@ -13,18 +13,27 @@ namespace LibraryAPI.Controllers
     [Route("api")]
     public class LibraryController : Controller
     {
-        private ILibraryService _libService;
+        private IUserService _userService;
+        private IBookService _bookService;
+        private IRecommendationService _recommendationService;
+        private IReportingService _reportingService;
+        private IReviewService _reviewService;
 
-        public LibraryController(ILibraryService libService)
+        public LibraryController(IUserService userService, IBookService bookService, IRecommendationService recommendationService,
+                                IReportingService reportingService, IReviewService reviewService)
         {
-              _libService = libService;
+              _userService = userService;
+              _bookService = bookService;
+              _recommendationService = recommendationService;
+              _reportingService = reportingService;
+              _reviewService = reviewService;
         }
         // GET api/books
         [HttpGet]
         [Route("books")]
         public IActionResult GetAllBooks()
         {
-            var books = _libService.getAllBooks();
+            var books = _bookService.getAllBooks();
             return Ok( books);
         }
         // GET api/books/5
@@ -32,7 +41,7 @@ namespace LibraryAPI.Controllers
         public IActionResult GetBookByID(int bookID)
         {
             try{
-                var bookItem =  _libService.getBookByID(bookID);
+                var bookItem =  _bookService.getBookByID(bookID);
                 return Ok(bookItem);
             }
             catch(ObjectNotFoundException e){
@@ -50,7 +59,7 @@ namespace LibraryAPI.Controllers
                 return StatusCode(412);
             }
             try{
-                _libService.AddNewBook(newBook);
+                _bookService.AddNewBook(newBook);
                 return StatusCode(201);
             }
             catch(ObjectNotFoundException e){
@@ -73,7 +82,7 @@ namespace LibraryAPI.Controllers
                 return StatusCode(412);
             }
             try{
-                _libService.DeleteBookByID(bookID);
+                _bookService.DeleteBookByID(bookID);
                 return StatusCode(204);
             }
             catch(ObjectNotFoundException e){

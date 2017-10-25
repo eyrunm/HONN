@@ -28,7 +28,11 @@ namespace LibraryAPI
         {
             services.AddMvc();
             services.AddTransient<ILibraryRepository, LibraryRepository>();
-            services.AddTransient<ILibraryService, LibraryService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IReviewService, ReviewService>();
+            services.AddTransient<IReportingService, ReportingService>();
+            services.AddTransient<IRecommendationService, RecommendationService>();
+            services.AddTransient<IBookService, BookService>();
             services.AddDbContext<AppDataContext>(options => 
                 options.UseSqlite("Data Source=../Repositories/LibraryAPI.db", b => b.MigrationsAssembly("api")));
         }

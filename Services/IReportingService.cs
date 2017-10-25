@@ -2,7 +2,8 @@ using System;
 
 namespace LibraryAPI.Services
 {
-    public interface IReviewService
+    public interface IReportingService
     {
+        
     }
 }
