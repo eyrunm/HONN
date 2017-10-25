@@ -28,11 +28,11 @@ namespace LibraryAPI.Controllers
             return Ok( books);
         }
         // GET api/books/5
-        [HttpGet("books/{book_id:int}")]
-        public IActionResult GetBookByID(int book_id)
+        [HttpGet("books/{bookID:int}")]
+        public IActionResult GetBookByID(int bookID)
         {
             try{
-                var bookItem =  _libService.getBookByID(book_id);
+                var bookItem =  _libService.getBookByID(bookID);
                 return Ok(bookItem);
             }
             catch(ObjectNotFoundException e){
@@ -62,12 +62,23 @@ namespace LibraryAPI.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
+            
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // DELETE api/books/5
+        [HttpDelete("books/{bookID:int}")]
+        public IActionResult DeleteBookByID(int bookID)
         {
+            if(!ModelState.IsValid){
+                return StatusCode(412);
+            }
+            try{
+                _libService.DeleteBookByID(bookID);
+                return StatusCode(204);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(412, e.Message);
+            }
         }
     }
 }
