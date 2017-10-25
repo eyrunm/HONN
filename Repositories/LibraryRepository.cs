@@ -89,7 +89,7 @@ namespace LibraryAPI.Repositories
 	/// Fills the database table books with data from JSON files
     /// If the database is empty
 	/// </summary>
-        public void FillBooks(){
+        private void FillBooks(){
             if(!_db.Books.Any()){
                 using (StreamReader r = new StreamReader("books.json"))
                 {
