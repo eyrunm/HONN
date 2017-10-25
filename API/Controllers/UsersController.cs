@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers
 {
-    [Route("api/users")]
+    [Route("api")]
     public class UsersController : Controller
     {
         private IUserService _userService;
@@ -20,7 +20,7 @@ namespace LibraryAPI.Controllers
 
         // GET api/users
         [HttpGet]
-        [Route("")]
+        [Route("users")]
         public IActionResult GetAllUsers()
         {
             var users = _userService.GetAllUsers();
