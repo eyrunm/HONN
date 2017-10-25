@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Repositories;
 
@@ -12,6 +13,12 @@ namespace LibraryAPI.Services
         {
             _repo = repo;
         }
+
+        public void AddNewBook(Book newBook)
+        {
+            _repo.AddNewBook(newBook);
+        }
+
         public IEnumerable<BookViewModel> getAllBooks(){
             var books = _repo.getAllBooks();
             if(books != null){
@@ -35,7 +42,7 @@ namespace LibraryAPI.Services
 
         public BookDetailsViewModel getBookByID(int book_id)
         {
-           var  book = _repo.getBookByID(book_id);
+           var book = _repo.getBookByID(book_id);
 
            return book;
         }

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace CoursesApi.Repositories
+namespace LibraryAPI.Repositories
 {
     [Serializable]
     public class ObjectNotFoundException : Exception

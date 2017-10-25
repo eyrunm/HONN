@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CoursesApi.Repositories;
+using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
+using LibraryAPI.Repositories;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ namespace LibraryAPI.Controllers
             var books = _libService.getAllBooks();
             return Ok( books);
         }
-        // GET api/values/5
+        // GET api/books/5
         [HttpGet("books/{book_id:int}")]
         public IActionResult GetBookByID(int book_id)
         {
@@ -40,10 +41,21 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        // POST api/values
+        // POST api/books
         [HttpPost]
-        public void Post([FromBody]string value)
+        [Route("books")]
+        public IActionResult AddNewBook([FromBody]Book newBook)
         {
+            if(!ModelState.IsValid){
+                return StatusCode(412);
+            }
+            try{
+                _libService.AddNewBook(newBook);
+                return StatusCode(201);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(412, e.Message);
+            }
         }
 
         // PUT api/values/5

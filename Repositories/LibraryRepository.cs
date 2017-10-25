@@ -145,5 +145,21 @@ namespace LibraryAPI.Repositories
                 return book;
             }
         }
+
+        public void AddNewBook(Book newBook)
+        {
+            if(newBook == null){
+                throw new ObjectNotFoundException("Book not valid");
+            }
+            var book = new Book{
+                Title = newBook.Title,
+                FirstName = newBook.FirstName,
+                LastName = newBook.LastName,
+                DatePublished = newBook.DatePublished,
+                ISBN = newBook.ISBN
+            };
+            _db.Add(book);
+            _db.SaveChanges();
+        }
     }
 }
