@@ -24,5 +24,11 @@ namespace LibraryAPI.Services
                 return null;
             }
         }
+
+        public UserViewModel GetUserById(int userId)
+        {
+            var user = _repo.GetUserById(userId);
+            return user;
+        }
     }
 }

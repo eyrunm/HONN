@@ -8,5 +8,6 @@ namespace LibraryAPI.Services
     public interface IUserService
     {
         IEnumerable<UserViewModel> GetAllUsers();
+        UserViewModel GetUserById(int userId);
     }
 }

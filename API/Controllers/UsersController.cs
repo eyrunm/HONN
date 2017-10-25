@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Repositories;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,11 +27,18 @@ namespace LibraryAPI.Controllers
             return Ok(users);
         }
 
-        // GET api/values/5
-        [HttpGet("/{id}")]
-        public string Get(int id)
+        // GET api/user/1
+        [HttpGet("/user/{userId:int}")]
+        public IActionResult GetUserById(int userId)
         {
-            return "value";
+            try{
+                var user =  _userService.GetUserById(userId);
+                return Ok(user);
+            }
+            catch(ObjectNotFoundException e){
+                Console.WriteLine("User not found");
+                return StatusCode(404, e.Message);
+            }
         }
 
         // POST api/values

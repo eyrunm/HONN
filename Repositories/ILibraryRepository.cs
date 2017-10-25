@@ -16,5 +16,6 @@ namespace LibraryAPI.Repositories
 
         // User functions
         IEnumerable<UserViewModel> GetAllUsers();
+        UserViewModel GetUserById(int userId);
     }
 }
