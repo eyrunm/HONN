@@ -35,6 +35,12 @@ namespace LibraryAPI.Services
             }
         }
 
+        public IEnumerable<BookViewModel> GetBooksByUserId(int userId)
+        {
+            var items = _repo.GetBooksByUserId(userId);
+            return items;
+        }
+
         public UserViewModel GetUserById(int userId)
         {
             var user = _repo.GetUserById(userId);

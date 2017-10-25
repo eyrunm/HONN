@@ -105,5 +105,24 @@ namespace LibraryAPI.Controllers
                 return StatusCode(412, e.Message);
             }
         }
+
+        /// <summary>
+        /// Gets a list of books that are registered to the user with given id
+        /// </summary>
+        /// <param name="userId">An integer id for the user</param>
+        // GET api/users/5/books
+        [HttpGet]
+        [Route("users/{userId:int}/books")]
+        public IActionResult GetBooksByUserId(int userId) 
+        {
+            try {
+                 var books = _userService.GetBooksByUserId(userId);
+                return Ok(books);
+            }
+            catch (ObjectNotFoundException e) {
+                Console.WriteLine("User not found");
+                return StatusCode(404, e.Message);
+            }
+        }
     }
 }

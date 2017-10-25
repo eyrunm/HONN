@@ -12,5 +12,6 @@ namespace LibraryAPI.Services
         void AddNewUser(Friend newUser);
         void DeleteUserById(int userId);
         Friend UpdateUserById(Friend updatedUser, int userId);
+        IEnumerable<BookViewModel> GetBooksByUserId(int userId);
     }
 }

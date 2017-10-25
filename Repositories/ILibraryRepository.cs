@@ -20,5 +20,6 @@ namespace LibraryAPI.Repositories
         void DeleteUserById(int userId);
         void AddNewUser(Friend newUser);
         Friend UpdateUserById(Friend updatedUser, int userId);
+        IEnumerable<BookViewModel> GetBooksByUserId(int userId);
     }
 }

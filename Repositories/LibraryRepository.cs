@@ -121,6 +121,31 @@ namespace LibraryAPI.Repositories
             return user;            
         }
 
+        /// <summary>
+        /// Gets a list of books registered by user with given Id
+        /// </summary>
+        public IEnumerable<BookViewModel> GetBooksByUserId(int userId) 
+        {
+            var user = _db.Friends.SingleOrDefault(u => u.ID == userId);
+
+            if (user == null) 
+            {
+                return null;
+            }
+
+            var books = (from l in _db.Loans
+                            where l.friendID == userId
+                            join b in _db.Books on l.bookID equals b.ID
+                            select new BookViewModel
+                            {
+                                Title = b.Title,
+                                Author = b.FirstName + " " + b.LastName,
+                                DatePublished = b.DatePublished
+                            }).ToList();
+
+            return books;
+        }
+
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty
