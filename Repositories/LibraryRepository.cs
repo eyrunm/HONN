@@ -19,12 +19,11 @@ namespace LibraryAPI.Repositories
             _db = db;
         }
 
+        // User Related Functions
 
-//User Related Functions
-
-    /// <summary>
-	/// Fetches all users in the database
-	/// </summary>
+        /// <summary>
+	    /// Fetches all users in the database
+	    /// </summary>
         public IEnumerable<UserViewModel> GetAllUsers()
         {
             FillFriendsAndLoans();
@@ -39,6 +38,29 @@ namespace LibraryAPI.Repositories
             }
             else{
                 return users;
+            }
+        }
+
+        /// <summary>
+        /// Gets a single user by its id
+        /// </summary>
+        public UserViewModel GetUserById(int userId)
+        {
+             var user = (from u in _db.Friends
+                        where u.ID == userId
+                        select new UserViewModel {
+                            Name = u.FirstName + " " + u.LastName,
+                            Email = u.Email,
+                            Address = u.Address,
+                            loanHistory = (from l in _db.Loans
+                                            where l.friendID == userId
+                                            select l).ToList()
+                        }).SingleOrDefault();
+            if(user == null) {
+                throw new ObjectNotFoundException("User ID not found");
+            }
+            else {
+                return user;
             }
         }
 
@@ -217,26 +239,6 @@ namespace LibraryAPI.Repositories
 
             return book;
             
-        }
-
-        /// <summary>
-        /// Gets a single user by its id
-        /// </summary>
-        public UserViewModel GetUserById(int userId)
-        {
-             var user = (from u in _db.Friends
-                        where u.ID == userId
-                        select new UserViewModel{
-                            Name = u.FirstName + " " + u.LastName,
-                            Email = u.Email,
-                            Address = u.Address
-                        }).SingleOrDefault();
-            if(user == null) {
-                throw new ObjectNotFoundException("User ID not found");
-            }
-            else {
-                return user;
-            }
         }
     }
 }

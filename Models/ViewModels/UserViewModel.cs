@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LibraryAPI.Models.EntityModels;
 
 namespace LibraryAPI.Models.ViewModels
 {    /// <summary>
@@ -21,5 +22,10 @@ namespace LibraryAPI.Models.ViewModels
 	/// The address of the user
 	/// </summary>
         public String Address { get; set; }
+	
+    	/// <summary>
+	/// The loan history for the book
+	/// </summary>
+        public List<Loan> loanHistory { get; set; }
     }
 }

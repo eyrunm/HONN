@@ -27,8 +27,12 @@ namespace LibraryAPI.Controllers
             return Ok(users);
         }
 
+        /// <summary>
+        /// Gets the user with the given ID 
+        /// </summary>
+        /// <param name="userId">The ID for the user to be fetched</param>
         // GET api/user/1
-        [HttpGet("/user/{userId:int}")]
+        [HttpGet("users/{userId:int}")]
         public IActionResult GetUserById(int userId)
         {
             try{
