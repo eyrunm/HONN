@@ -22,5 +22,6 @@ namespace LibraryAPI.Repositories
         Friend UpdateUserById(Friend updatedUser, int userId);
         IEnumerable<BookViewModel> GetBooksByUserId(int userId);
         void AddBookToUser(int userId, int bookId);
+        void ReturnBook(int userId, int bookId);
     }
 }

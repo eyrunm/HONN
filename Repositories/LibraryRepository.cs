@@ -164,6 +164,23 @@ namespace LibraryAPI.Repositories
             _db.SaveChanges();
         }
 
+        /// <summary>
+        /// Deletes the loan when book is returned
+        /// </summary>
+        public void ReturnBook(int userId, int bookId) 
+        {
+            var loan = (from l in _db.Loans
+                        where l.friendID == userId && l.bookID == bookId
+                        select l).SingleOrDefault();
+            if(loan == null){
+                throw new ObjectNotFoundException("Loan with these ID was not found");
+            }
+            else{
+                _db.Loans.Remove(loan);
+                _db.SaveChanges();
+            }
+        }
+
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty

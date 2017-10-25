@@ -125,6 +125,12 @@ namespace LibraryAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds a book with given id to a user with given id
+        /// </summary>
+        /// <param name="userId">An integer id for the user</param>
+        /// <param name="bookId">An integer id for the book</param>
+        // POST api/users/1/books/18
         [HttpPost]
         [Route("users/{userId:int}/books/{bookId:int}")]
         public IActionResult AddBookToUser(int userId, int bookId)
@@ -135,6 +141,28 @@ namespace LibraryAPI.Controllers
             try{
                 _userService.AddBookToUser(userId, bookId);
                 return StatusCode(201);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(412, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a loan between user and book with given ids
+        /// </summary>
+        /// <param name="userId">An integer id for the user</param>
+        /// <param name="bookId">An integer id for the book</param>
+        // DELETE api/users/1/books/18
+        [HttpDelete]
+        [Route("users/{userId:int}/books/{bookId:int}")]
+        public IActionResult ReturnBook(int userId, int bookId) 
+        {
+            if(!ModelState.IsValid){
+                return StatusCode(412);
+            }
+            try{
+                _userService.ReturnBook(userId, bookId);
+                return StatusCode(204);
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(412, e.Message);
