@@ -24,7 +24,7 @@ namespace LibraryAPI.Repositories
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty
 	/// </summary>
-        public void fillFriendsAndLoans(){
+        public void FillFriendsAndLoans(){
             if(!_db.Friends.Any()){
                 using (StreamReader r = new StreamReader("friends.json"))
                 {
@@ -63,7 +63,7 @@ namespace LibraryAPI.Repositories
 	/// Fills the database table books with data from JSON files
     /// If the database is empty
 	/// </summary>
-        public void fillBooks(){
+        public void FillBooks(){
             if(!_db.Books.Any()){
                 using (StreamReader r = new StreamReader("books.json"))
                 {
@@ -91,9 +91,9 @@ namespace LibraryAPI.Repositories
 	///Returns all books in the database 
     ///(maybe it should only return books that are not being borrowed)
 	/// </summary>
-        public IEnumerable<BookViewModel> getAllBooks()
+        public IEnumerable<BookViewModel> GetAllBooks()
         {
-            fillBooks();
+            FillBooks();
             var books = (from b in _db.Books
                         select new BookViewModel{
                             Title = b.Title,
@@ -110,9 +110,9 @@ namespace LibraryAPI.Repositories
     /// <summary>
 	/// Fetches all users in the database
 	/// </summary>
-        public IEnumerable<UserViewModel> getAllUsers()
+        public IEnumerable<UserViewModel> GetAllUsers()
         {
-            fillFriendsAndLoans();
+            FillFriendsAndLoans();
             var users = (from f in _db.Friends
                         select new UserViewModel{
                             Name = f.FirstName + " " + f.LastName,
@@ -130,7 +130,7 @@ namespace LibraryAPI.Repositories
     /// <summary>
 	/// Gets a single book by its ID
 	/// </summary>
-        public BookDetailsViewModel getBookByID(int book_id)
+        public BookDetailsViewModel GetBookByID(int book_id)
         {
             var book = (from b in _db.Books
                         where b.ID == book_id

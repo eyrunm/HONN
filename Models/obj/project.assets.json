@@ -464,23 +464,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Notandi\\.nuget\\packages\\": {},
+    "C:\\Users\\AnítaSól\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Models\\Models.csproj",
+      "projectUniqueName": "c:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Models\\Models.csproj",
       "projectName": "Models",
-      "projectPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Models\\Models.csproj",
-      "packagesPath": "C:\\Users\\Notandi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Models\\obj\\",
+      "projectPath": "c:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Models\\Models.csproj",
+      "packagesPath": "C:\\Users\\AnítaSól\\.nuget\\packages\\",
+      "outputPath": "c:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Models\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Notandi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\AnítaSól\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

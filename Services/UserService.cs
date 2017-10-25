@@ -16,7 +16,7 @@ namespace LibraryAPI.Services
 
         public IEnumerable<UserViewModel> GetAllUsers()
         {
-            var users = _repo.getAllUsers();
+            var users = _repo.GetAllUsers();
             if(users != null){
                 return users;
             }

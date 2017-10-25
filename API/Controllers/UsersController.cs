@@ -10,21 +10,21 @@ namespace LibraryAPI.Controllers
     [Route("api/users")]
     public class UsersController : Controller
     {
-        //private ILibraryService _libService;
+        private IUserService _userService;
 
-        public UsersController()
+        public UsersController(IUserService userService)
         {
-              //_libService = libService;
+              _userService = userService;
         }
 
         // GET api/users
-       /* [HttpGet]
+        [HttpGet]
         [Route("")]
         public IActionResult GetAllUsers()
         {
-            var users = _libService.getAllUsers();
+            var users = _userService.GetAllUsers();
             return Ok(users);
-        }*/
+        }
 
         // GET api/values/5
         [HttpGet("/{id}")]

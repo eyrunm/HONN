@@ -7,10 +7,13 @@ namespace LibraryAPI.Repositories
 {
     public interface ILibraryRepository
     {
-        IEnumerable<BookViewModel> getAllBooks();
-        BookDetailsViewModel getBookByID(int book_id);
-        IEnumerable<UserViewModel> getAllUsers();
+        // Book functions
+        IEnumerable<BookViewModel> GetAllBooks();
+        BookDetailsViewModel GetBookByID(int book_id);
         void AddNewBook(Book newBook);
         void DeleteBookByID(int bookID);
+
+        // User functions
+        IEnumerable<UserViewModel> GetAllUsers();
     }
 }
