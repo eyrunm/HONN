@@ -11,5 +11,7 @@ namespace LibraryAPI.Repositories
         public DbSet<Book> Books { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<Loan> Loans { get; set; }
+
+        public DbSet<Review> Reviews { get; set; }
     }
 }    

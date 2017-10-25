@@ -35,5 +35,6 @@ namespace LibraryAPI.Models.EntityModels
 	/// The ISBN number for the book
 	/// </summary>
         public String ISBN { get; set; }
+
     }
 }

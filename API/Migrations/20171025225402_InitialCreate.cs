@@ -49,11 +49,27 @@ namespace api.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     DateBorrowed = table.Column<string>(type: "TEXT", nullable: true),
                     bookID = table.Column<int>(type: "INTEGER", nullable: false),
-                    friendID = table.Column<int>(type: "INTEGER", nullable: false)
+                    friendID = table.Column<int>(type: "INTEGER", nullable: false),
+                    hasReturned = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Loans", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Rating = table.Column<int>(type: "INTEGER", nullable: false),
+                    bookID = table.Column<int>(type: "INTEGER", nullable: false),
+                    friendID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.ID);
                 });
         }
 
@@ -67,6 +83,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Loans");
+
+            migrationBuilder.DropTable(
+                name: "Reviews");
         }
     }
 }

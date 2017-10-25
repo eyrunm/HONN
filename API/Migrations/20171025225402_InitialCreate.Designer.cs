@@ -10,7 +10,7 @@ using System;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20171024121620_InitialCreate")]
+    [Migration("20171025225402_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,9 +68,27 @@ namespace api.Migrations
 
                     b.Property<int>("friendID");
 
+                    b.Property<bool>("hasReturned");
+
                     b.HasKey("ID");
 
                     b.ToTable("Loans");
+                });
+
+            modelBuilder.Entity("LibraryAPI.Models.EntityModels.Review", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Rating");
+
+                    b.Property<int>("bookID");
+
+                    b.Property<int>("friendID");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Reviews");
                 });
 #pragma warning restore 612, 618
         }

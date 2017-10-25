@@ -41,6 +41,11 @@ namespace LibraryAPI.Services
            return book;
         }
 
+        public void OnStart()
+        {
+            _repo.OnStart();
+        }
+
         public Book UpdateBookByID(Book updatedBook, int bookID)
         {
             var book = _repo.UpdateBookByID(updatedBook, bookID);

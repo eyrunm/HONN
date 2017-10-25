@@ -7,6 +7,7 @@ using LibraryAPI.Models;
 using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
 using Newtonsoft.Json;
+using LibraryAPI.Models.DTOModels;
 
 namespace LibraryAPI.Repositories
 {
@@ -19,19 +20,31 @@ namespace LibraryAPI.Repositories
             _db = db;
         }
 
-        // User Related Functions
+    /// <summary>
+	/// Fills the database with data
+	/// </summary>
+        public void OnStart()
+        {
+            FillBooks();
+            FillFriendsAndLoans();
+        }
+
+
+        /// User Related Functions
 
         /// <summary>
 	    /// Fetches all users in the database
 	    /// </summary>
         public IEnumerable<UserViewModel> GetAllUsers()
         {
-            FillFriendsAndLoans();
             var users = (from f in _db.Friends
                         select new UserViewModel{
                             Name = f.FirstName + " " + f.LastName,
                             Address = f.Address,
-                            Email = f.Email
+                            Email = f.Email,
+                            loanHistory = (from l in _db.Loans
+                                            where l.friendID == f.ID
+                                            select l).ToList()
                         }).OrderBy(x => x.Name).ToList();
             if(users == null){
                 return null;
@@ -130,11 +143,11 @@ namespace LibraryAPI.Repositories
 
             if (user == null) 
             {
-                return null;
+                throw new ObjectNotFoundException("User not found");
             }
 
             var books = (from l in _db.Loans
-                            where l.friendID == userId
+                            where l.friendID == userId && l.hasReturned == false
                             join b in _db.Books on l.bookID equals b.ID
                             select new BookViewModel
                             {
@@ -142,7 +155,9 @@ namespace LibraryAPI.Repositories
                                 Author = b.FirstName + " " + b.LastName,
                                 DatePublished = b.DatePublished
                             }).ToList();
-
+            if(books == null){
+                throw new ObjectNotFoundException("This user has not borrowed any books");
+            }
             return books;
         }
 
@@ -153,6 +168,13 @@ namespace LibraryAPI.Repositories
         {
             var user = _db.Friends.SingleOrDefault(u => u.ID == userId);
             var book = _db.Books.SingleOrDefault(b => b.ID == bookId);
+
+            if(book == null){
+                throw new ObjectNotFoundException("A book with the given ID does not exist");
+            }
+            if(user == null){
+                throw new ObjectNotFoundException("User with this ID cannot be found");
+            }
 
             _db.Loans.Add(
                     new Loan { 
@@ -165,18 +187,26 @@ namespace LibraryAPI.Repositories
         }
 
         /// <summary>
-        /// Deletes the loan when book is returned
+        /// Returns the book with the given ID
+        /// marks the Loan as returned
         /// </summary>
         public void ReturnBook(int userId, int bookId) 
         {
+            var friend = (from f in _db.Friends
+                            where f.ID == userId
+                            select f).SingleOrDefault();
+            if(friend == null){
+                throw new ObjectNotFoundException("User with the given ID was not found");
+            }
             var loan = (from l in _db.Loans
                         where l.friendID == userId && l.bookID == bookId
                         select l).SingleOrDefault();
             if(loan == null){
-                throw new ObjectNotFoundException("Loan with these ID was not found");
+                throw new ObjectNotFoundException("Loan was not found");
             }
             else{
-                _db.Loans.Remove(loan);
+                loan.hasReturned = true;
+                _db.Update(loan);
                 _db.SaveChanges();
             }
         }
@@ -206,7 +236,7 @@ namespace LibraryAPI.Repositories
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty
 	/// </summary>
-        public void FillFriendsAndLoans(){
+        private void FillFriendsAndLoans(){
             if(!_db.Friends.Any()){
                 using (StreamReader r = new StreamReader("friends.json"))
                 {
@@ -241,10 +271,68 @@ namespace LibraryAPI.Repositories
             }
         }
 
+    /// <summary>
+	/// Returns all reviews from the user with the given ID
+	/// </summary>
+        public IEnumerable<ReviewViewModel> GetAllReviewsByUser(int userID)
+        {
+            var user = _db.Friends.SingleOrDefault(u => u.ID == userID);
+            if(user == null){
+                throw new ObjectNotFoundException("User ID was not found");
+            }
+            
+            var reviews = (from r in _db.Reviews
+                            where r.friendID == userID
+                            select new ReviewViewModel{
+                                BookTitle = (from b in _db.Books
+                                        where b.ID == r.bookID
+                                        select b.Title).SingleOrDefault(),
+                                AuthorFirstName = (from b in _db.Books
+                                        where b.ID == r.bookID
+                                        select b.FirstName).SingleOrDefault(),
+                                AuthorLastName = (from b in _db.Books
+                                        where b.ID == r.bookID
+                                        select b.LastName).SingleOrDefault(),
+                                Rating = r.Rating
+                                }).ToList();
+            return reviews;
+        }
+
+        public ReviewViewModel AddReviewByUser(RatingDTO rating, int userID, int bookID)
+        {
+            if(rating.Rating > 5 || rating.Rating < 0){
+                throw new RatingException("Rating can only be from 0 - 5");
+            }
+            var user = _db.Friends.SingleOrDefault( f => f.ID == userID);
+            if(user == null){
+                throw new ObjectNotFoundException("User ID not found");
+            }
+
+            var book = _db.Books.SingleOrDefault( b => b.ID == bookID);
+            if(book == null){
+                throw new ObjectNotFoundException("Book ID not found");
+            }
+
+            _db.Reviews.Add(new Review{
+                bookID = bookID,
+                friendID = userID,
+                Rating = rating.Rating
+            });
+            _db.SaveChanges();
+            return new ReviewViewModel{
+                BookTitle = book.Title,
+                AuthorFirstName = book.FirstName,
+                AuthorLastName = book.LastName,
+                Rating = rating.Rating
+            };
+        }
 
 
 
-//Book Related Functions
+
+
+///Book Related Functions
+
     /// <summary>
 	/// Fills the database table books with data from JSON files
     /// If the database is empty
@@ -279,7 +367,6 @@ namespace LibraryAPI.Repositories
 	/// </summary>
         public IEnumerable<BookViewModel> GetAllBooks()
         {
-            FillBooks();
             var books = (from b in _db.Books
                         select new BookViewModel{
                             Title = b.Title,
@@ -305,6 +392,9 @@ namespace LibraryAPI.Repositories
                             Title = b.Title,
                             Author = b.FirstName + " " + b.LastName,
                             DatePublished = b.DatePublished,
+                            Rating = (from r in _db.Reviews
+                                        where r.bookID == book_id
+                                        select r.Rating).Average(),
                             ISBN = b.ISBN,
                             loanHistory = (from l in _db.Loans
                                             where l.bookID == book_id
@@ -338,7 +428,8 @@ namespace LibraryAPI.Repositories
         }
 
     /// <summary>
-	/// Removes the book with the given ID from the database
+	/// Removes the book with the given ID, and all loans and ratings
+    /// associated with it, from the database
 	/// </summary>
         public void DeleteBookByID(int bookID)
         {
@@ -349,6 +440,20 @@ namespace LibraryAPI.Repositories
                 throw new ObjectNotFoundException("a book with this ID was not found");
             }
             else{
+                var loans = (from l in _db.Loans
+                                where l.bookID == bookID
+                                select l).ToList();
+                foreach(Loan l in loans){
+                    _db.Loans.Remove(l);
+                    _db.SaveChanges();
+                }
+                var reviews = (from r in _db.Reviews
+                                where r.bookID == bookID
+                                select r).ToList();
+                foreach(Review r in reviews){
+                    _db.Reviews.Remove(r);
+                    _db.SaveChanges();
+                }
                 _db.Books.Remove(book);
                 _db.SaveChanges();
             }
@@ -378,5 +483,10 @@ namespace LibraryAPI.Repositories
             return book;
             
         }
+
+
+
+        ///
+
     }
 }

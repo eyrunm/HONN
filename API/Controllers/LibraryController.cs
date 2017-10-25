@@ -27,6 +27,7 @@ namespace LibraryAPI.Controllers
               _recommendationService = recommendationService;
               _reportingService = reportingService;
               _reviewService = reviewService;
+              bookService.OnStart();
         }
 
         /// <summary>

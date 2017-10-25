@@ -16,5 +16,6 @@ namespace LibraryAPI.Services
         void AddBookToUser(int userId, int bookId);
         void ReturnBook(int userId, int bookId);
         Loan UpdateLoan(Loan updatedLoan, int userId, int bookId);
+        void OnStart();
     }
 }

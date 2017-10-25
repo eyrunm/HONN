@@ -30,8 +30,15 @@ namespace LibraryAPI.Models.ViewModels
         public String ISBN { get; set; }
 
     /// <summary>
+	/// The Average rating of the book
+	/// </summary>
+        public double Rating { get; set; }
+
+    /// <summary>
 	/// The loan history for the book
 	/// </summary>
         public List<Loan> loanHistory { get; set; }
+
+    
     }
 }

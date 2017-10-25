@@ -52,6 +52,11 @@ namespace LibraryAPI.Services
             return user;
         }
 
+        public void OnStart()
+        {
+            _repo.OnStart();
+        }
+
         public void ReturnBook(int userId, int bookId)
         {
             _repo.ReturnBook(userId, bookId);
