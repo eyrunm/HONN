@@ -20,6 +20,28 @@ namespace LibraryAPI.Repositories
         }
 
 
+//User Related Functions
+
+    /// <summary>
+	/// Fetches all users in the database
+	/// </summary>
+        public IEnumerable<UserViewModel> GetAllUsers()
+        {
+            FillFriendsAndLoans();
+            var users = (from f in _db.Friends
+                        select new UserViewModel{
+                            Name = f.FirstName + " " + f.LastName,
+                            Address = f.Address,
+                            Email = f.Email
+                        }).OrderBy(x => x.Name).ToList();
+            if(users == null){
+                return null;
+            }
+            else{
+                return users;
+            }
+        }
+
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty
@@ -59,6 +81,10 @@ namespace LibraryAPI.Repositories
             }
         }
 
+
+
+
+//Book Related Functions
     /// <summary>
 	/// Fills the database table books with data from JSON files
     /// If the database is empty
@@ -105,25 +131,6 @@ namespace LibraryAPI.Repositories
             }
             else{
                 return books;
-            }
-        }
-    /// <summary>
-	/// Fetches all users in the database
-	/// </summary>
-        public IEnumerable<UserViewModel> GetAllUsers()
-        {
-            FillFriendsAndLoans();
-            var users = (from f in _db.Friends
-                        select new UserViewModel{
-                            Name = f.FirstName + " " + f.LastName,
-                            Address = f.Address,
-                            Email = f.Email
-                        }).OrderBy(x => x.Name).ToList();
-            if(users == null){
-                return null;
-            }
-            else{
-                return users;
             }
         }
 
