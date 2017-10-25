@@ -28,6 +28,10 @@ namespace LibraryAPI.Controllers
               _reportingService = reportingService;
               _reviewService = reviewService;
         }
+
+        /// <summary>
+        /// Gets all books listed in the database
+        /// </summary>
         // GET api/books
         [HttpGet]
         [Route("books")]
@@ -36,6 +40,11 @@ namespace LibraryAPI.Controllers
             var books = _bookService.getAllBooks();
             return Ok( books);
         }
+
+        /// <summary>
+        /// Gets the book with the given ID 
+        /// </summary>
+        /// <param name="bookID">The ID for the book to be fetched</param>
         // GET api/books/5
         [HttpGet("books/{bookID:int}")]
         public IActionResult GetBookByID(int bookID)
@@ -91,6 +100,10 @@ namespace LibraryAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes the book with the given id book 
+        /// </summary>
+        /// <param name="bookID">An integer id for the book</param>
         // DELETE api/books/5
         [HttpDelete("books/{bookID:int}")]
         public IActionResult DeleteBookByID(int bookID)
