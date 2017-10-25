@@ -218,5 +218,25 @@ namespace LibraryAPI.Repositories
             return book;
             
         }
+
+        /// <summary>
+        /// Gets a single user by its id
+        /// </summary>
+        public UserViewModel GetUserById(int userId)
+        {
+             var user = (from u in _db.Friends
+                        where u.ID == userId
+                        select new UserViewModel{
+                            Name = u.FirstName + " " + u.LastName,
+                            Email = u.Email,
+                            Address = u.Address
+                        }).SingleOrDefault();
+            if(user == null) {
+                throw new ObjectNotFoundException("User ID not found");
+            }
+            else {
+                return user;
+            }
+        }
     }
 }
