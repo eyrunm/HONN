@@ -2,7 +2,7 @@ using System;
 
 namespace LibraryAPI.Services
 {
-    public class ReviewService
+    public class ReviewService : IReviewService
     {
     }
 }

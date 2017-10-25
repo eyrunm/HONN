@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LibraryAPI.Services
 {
-    public class BookService
+    public class BookService : IBookService
     {
     }
 }
