@@ -1,6 +1,5 @@
 language: csharp
 dotnet: 2.0.0
 script:
-- dotnet restore
-- dotnet build
-- dotnet test
+- dotnet restore API/
+- dotnet build API/
