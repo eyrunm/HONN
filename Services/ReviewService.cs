@@ -26,5 +26,23 @@ namespace LibraryAPI.Services
 
             return reviews;
         }
+
+        public ReviewViewModel GetReviewByUserForBook(int userID, int bookID)
+        {
+            var reviews = _repo.GetReviewByUserForBook(userID, bookID);
+
+            return reviews;
+        }
+        public void DeleteReviewByUserForBook(int userID, int bookID)
+        {
+            _repo.DeleteReviewByUserForBook(userID, bookID);
+        }
+
+        public ReviewViewModel UpdateReviewByUser(RatingDTO rating, int userID, int bookID)
+        {
+            var review = _repo.UpdateReviewByUser(rating, userID, bookID);
+            
+            return review;
+        }
     }
 }

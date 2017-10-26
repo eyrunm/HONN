@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Repositories;
@@ -118,6 +119,85 @@ namespace LibraryAPI.Controllers
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(412, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Returns all reviews for all books 
+        /// </summary>
+        // GET api/books/reviews
+        [HttpGet("books/reviews")]
+        public IActionResult GetAllReviewsForAllBooks()
+        {
+            try{
+                var reviews =  _bookService.GetAllReviewsForAllBooks();
+                return Ok(reviews);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Returns all reviews for a book with the given ID
+        /// </summary>
+        /// <param name="bookID">An integer id for the book</param>
+        // GET api/books/bookID/reviews
+        [HttpGet("books/{bookID}/reviews")]
+        public IActionResult GetAllReviewsForBook(int bookID)
+        {
+            try{
+                var reviews =  _bookService.GetAllReviewsForBook(bookID);
+                return Ok(reviews);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Returns a review by the user with the given userID for a book with the given bookID
+        /// </summary>
+        /// <param name="bookID">An integer id for the book</param>        
+        /// <param name="userID">An integer id for the book</param>
+
+        // GET api/books/reviews/bookID/reviews/userID
+        [HttpGet("books/{bookID}/reviews/{userID}")]
+        public IActionResult GetReviewForBookByUser(int bookID, int userID)
+        {
+            try{
+                var review =  _bookService.GetReviewForBookByUser(bookID, userID);
+                return Ok(review);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
+
+            catch(RatingException e){
+                return StatusCode(404, e.Message);
+            }
+        }
+
+                /// <summary>
+        /// Returns a review by the user with the given userID for a book with the given bookID
+        /// </summary>
+        /// <param name="bookID">An integer id for the book</param>        
+        /// <param name="userID">An integer id for the book</param>
+
+        // GET api/books/reviews/bookID/reviews/userID
+        [HttpPut("books/{bookID}/reviews/{userID}")]
+        public IActionResult UpdateReviewForBookByUser([FromBody] RatingDTO rating, int bookID, int userID)
+        {
+            try{
+                var review =  _bookService.UpdateReviewForBookByUser(rating, bookID, userID);
+                return Ok(review);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
+
+            catch(RatingException e){
+                return StatusCode(404, e.Message);
             }
         }
     }

@@ -14,8 +14,7 @@ namespace LibraryAPI.Repositories
         void AddNewBook(Book newBook);
         void DeleteBookByID(int bookID);
         Book UpdateBookByID(Book updatedBook, int bookID);
-        ReviewViewModel AddReviewByUser(RatingDTO rating, int userID, int bookID);
-        IEnumerable<ReviewViewModel> GetAllReviewsByUser(int userID);
+
 
         // User functions
         IEnumerable<UserViewModel> GetAllUsers();
@@ -28,5 +27,15 @@ namespace LibraryAPI.Repositories
         void ReturnBook(int userId, int bookId);
         Loan UpdateLoan(Loan updatedLoan, int userId, int bookId);
         void OnStart();
+
+        // Review functions
+        ReviewViewModel AddReviewByUser(RatingDTO rating, int userID, int bookID);
+        IEnumerable<ReviewViewModel> GetAllReviewsByUser(int userID);
+        ReviewViewModel GetReviewByUserForBook(int userID, int bookID);
+        ReviewViewModel UpdateReviewByUser(RatingDTO rating, int userID, int bookID);
+        ReviewViewModel GetReviewForBookByUser(int bookID, int userID);
+        void DeleteReviewByUserForBook(int userID, int bookID);
+        IEnumerable<ReviewViewModel> GetAllReviewsForAllBooks();
+        IEnumerable<ReviewViewModel> GetAllReviewsForBook(int bookID);
     }
 }

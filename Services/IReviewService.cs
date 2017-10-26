@@ -9,5 +9,8 @@ namespace LibraryAPI.Services
     {
         IEnumerable<ReviewViewModel> GetAllReviewsByUser(int userID);
         ReviewViewModel AddReviewByUser(RatingDTO rating, int userID, int bookID);
+        ReviewViewModel GetReviewByUserForBook(int userID, int bookID);
+        void DeleteReviewByUserForBook(int userID, int bookID);
+        ReviewViewModel UpdateReviewByUser(RatingDTO rating, int userID, int bookID);
     }
 }
