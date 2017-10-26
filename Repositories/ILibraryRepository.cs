@@ -26,6 +26,9 @@ namespace LibraryAPI.Repositories
         void AddBookToUser(int userId, int bookId);
         void ReturnBook(int userId, int bookId);
         Loan UpdateLoan(Loan updatedLoan, int userId, int bookId);
+
+        IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID);
+
         void OnStart();
 
         // Review functions

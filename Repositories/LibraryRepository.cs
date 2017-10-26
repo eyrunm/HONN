@@ -645,5 +645,54 @@ namespace LibraryAPI.Repositories
             var review = GetReviewByUserForBook(userID, bookID);
             return review;
         }
+
+        public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID)
+        {
+            /*var topRatedBooks = (from r in _db.Reviews
+                                where r.friendID != userID
+                                select r).OrderBy(x => x.Rating).Take(20);
+
+            var unread = (from l in _db.Loans
+                            where l.friendID != userID
+                            select l.bookID).ToList();
+            List<RecommendationViewModel> recommendations = new List<RecommendationViewModel>();
+            foreach(var b in topRatedBooks){
+                if(unread.Contains(b.bookID)){
+                    Book b1 = (from book in _db.Books where book.ID == b.bookID select book).SingleOrDefault();
+                    recommendations.Add(new RecommendationViewModel{
+                        BookTitle = b1.Title,
+                                    AuthorFirstName = b1.FirstName,
+                                    AuthorLastName = b1.LastName,
+                                    AverageRating = (from rating in _db.Reviews
+                                                    where rating.bookID == b.ID
+                                                    select rating.Rating).Average(),
+                                    LoanCount = (from loans in _db.Loans
+                                                    where loans.bookID == b.ID
+                                                    select loans).Count()
+                    });
+                }
+            }*/
+            var topRatedBooks = (from r in _db.Reviews
+                                where r.friendID != userID
+                                join l in _db.Loans on r.bookID equals l.bookID 
+                                    where l.friendID != userID
+                                join b in _db.Books on r.bookID equals b.ID
+                                select new RecommendationViewModel{
+                                        BookTitle = b.Title,
+                                        AuthorFirstName = b.FirstName,
+                                        AuthorLastName = b.LastName,
+                                        AverageRating = (from rating in _db.Reviews
+                                                    where rating.bookID == b.ID
+                                                    select rating.Rating).Average(),
+                                    LoanCount = (from loans in _db.Loans
+                                                    where loans.bookID == b.ID
+                                                    select loans).Count()
+                                }).ToList();
+
+            if(topRatedBooks == null){
+                throw new ObjectNotFoundException("cannot find top rated books");
+            }
+            return topRatedBooks;
+        }
     }
 }

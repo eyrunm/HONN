@@ -15,11 +15,13 @@ namespace LibraryAPI.Controllers
     {
         private IUserService _userService;
         private IReviewService _reviewService;
+        private IRecommendationService _recommendationService;
 
-        public UsersController(IUserService userService, IReviewService reviewService)
+        public UsersController(IUserService userService, IReviewService reviewService, IRecommendationService recommendationService)
         {
               _userService = userService;
               _reviewService = reviewService;
+              _recommendationService = recommendationService;
               _userService.OnStart();
         }
         /// <summary>
@@ -305,6 +307,22 @@ namespace LibraryAPI.Controllers
             }
             catch (RatingException e){
                 return StatusCode(404, e.Message);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Returns recommendations for the user with the given ID
+        /// </summary>
+        /// <param name="userID">An integer id for the user</param>
+        [HttpGet]
+        [Route("users/{userID:int}/recommendation")]
+        public IActionResult GetRecommendationsForUser(int userID){
+            try{
+                var recommendations =  _recommendationService.GetRecommendationsForUser(userID);
+                return Ok(recommendations);
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(404, e.Message);
