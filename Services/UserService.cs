@@ -29,9 +29,9 @@ namespace LibraryAPI.Services
             _repo.DeleteUserById(userId);
         }
 
-        public IEnumerable<UserViewModel> GetAllUsers()
+        public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
         {
-            var users = _repo.GetAllUsers();
+            var users = _repo.GetAllUsers(LoanDate);
             if(users != null){
                 return users;
             }

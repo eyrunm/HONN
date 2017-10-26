@@ -12751,23 +12751,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Notandi\\.nuget\\packages\\": {},
+    "C:\\Users\\AnítaSól\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\API\\api.csproj",
+      "projectUniqueName": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\API\\api.csproj",
       "projectName": "api",
-      "projectPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\API\\api.csproj",
-      "packagesPath": "C:\\Users\\Notandi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\API\\obj\\",
+      "projectPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\API\\api.csproj",
+      "packagesPath": "C:\\Users\\AnítaSól\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Notandi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\AnítaSól\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -12780,11 +12780,11 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Services\\Services.csproj": {
-              "projectPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Services\\Services.csproj"
+            "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Services\\Services.csproj": {
+              "projectPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Services\\Services.csproj"
             },
-            "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Models\\Models.csproj": {
-              "projectPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Models\\Models.csproj"
+            "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Models\\Models.csproj": {
+              "projectPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Models\\Models.csproj"
             }
           }
         }

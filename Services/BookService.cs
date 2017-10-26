@@ -25,8 +25,8 @@ namespace LibraryAPI.Services
             _repo.DeleteBookByID(bookID);
         }
 
-        public IEnumerable<BookViewModel> getAllBooks(){
-            var books = _repo.GetAllBooks();
+        public IEnumerable<BookViewModel> GetAllBooks(String LoanDate){
+            var books = _repo.GetAllBooks(LoanDate);
             if(books != null){
                 return books;
             }

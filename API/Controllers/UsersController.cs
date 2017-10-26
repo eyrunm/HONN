@@ -28,9 +28,9 @@ namespace LibraryAPI.Controllers
         // GET api/users
         [HttpGet]
         [Route("users")]
-        public IActionResult GetAllUsers()
+        public IActionResult GetAllUsers(String LoanDate = "", int LoanDuration = 0)
         {
-            var users = _userService.GetAllUsers();
+            var users = _userService.GetAllUsers(LoanDate);
             return Ok(users);
         }
 

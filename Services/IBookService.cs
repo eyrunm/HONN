@@ -8,7 +8,7 @@ namespace LibraryAPI.Services
 {
     public interface IBookService
     {
-        IEnumerable<BookViewModel> getAllBooks ();
+        IEnumerable<BookViewModel> GetAllBooks (String LoanDate);
         BookDetailsViewModel getBookByID(int book_id);
         void AddNewBook(Book newBook);
         void DeleteBookByID(int bookID);

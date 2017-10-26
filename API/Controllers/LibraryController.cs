@@ -37,9 +37,9 @@ namespace LibraryAPI.Controllers
         // GET api/books
         [HttpGet]
         [Route("books")]
-        public IActionResult GetAllBooks()
+        public IActionResult GetAllBooks(String LoanDate = "")
         {
-            var books = _bookService.getAllBooks();
+            var books = _bookService.GetAllBooks(LoanDate);
             return Ok( books);
         }
 

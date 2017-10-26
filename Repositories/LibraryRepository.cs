@@ -104,22 +104,35 @@ namespace LibraryAPI.Repositories
         /// <summary>
 	    /// Fetches all users in the database
 	    /// </summary>
-        public IEnumerable<UserViewModel> GetAllUsers()
+        public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
         {
-            var users = (from f in _db.Friends
-                        select new UserViewModel{
-                            Name = f.FirstName + " " + f.LastName,
-                            Address = f.Address,
-                            Email = f.Email,
-                            loanHistory = (from l in _db.Loans
-                                            where l.friendID == f.ID
-                                            select l).ToList()
-                        }).OrderBy(x => x.Name).ToList();
-            if(users == null){
-                return null;
+            if(LoanDate == "" || LoanDuration == 0) {
+                var users = (from f in _db.Friends
+                            select new UserViewModel {
+                                Name = f.FirstName + " " + f.LastName,
+                                Address = f.Address,
+                                Email = f.Email,
+                                loanHistory = (from l in _db.Loans
+                                                where l.friendID == f.ID
+                                                select l).ToList()
+                            }).OrderBy(x => x.Name).ToList();
+                if(users == null) { return null; }
+                else { return users; }
             }
-            else{
-                return users;
+            else {
+                var users = (from l in _db.Loans
+                             where l.hasReturned == false
+                             join f in _db.Friends on l.friendID equals f.ID
+                             select new UserViewModel {
+                                 Name = f.FirstName + " " + f.LastName,
+                                Address = f.Address,
+                                Email = f.Email,
+                                loanHistory = (from lo in _db.Loans
+                                                where lo.friendID == f.ID
+                                                select lo).ToList()
+                             }).OrderBy(x => x.Name).ToList();
+                if(users == null) { return null; }
+                else { return users; }
             }
         }
 
@@ -473,19 +486,31 @@ namespace LibraryAPI.Repositories
 	///Returns all books in the database 
     ///(maybe it should only return books that are not being borrowed)
 	/// </summary>
-        public IEnumerable<BookViewModel> GetAllBooks()
+        public IEnumerable<BookViewModel> GetAllBooks(String LoanDate)
         {
-            var books = (from b in _db.Books
-                        select new BookViewModel{
-                            Title = b.Title,
-                            Author = b.FirstName + " " + b.LastName,
-                            DatePublished = b.DatePublished
-                        }).OrderBy(x => x.Title).ToList();
-            if(books == null){
-                return null;
+            if(LoanDate == "") {
+                var books = (from b in _db.Books
+                            select new BookViewModel{
+                                Title = b.Title,
+                                Author = b.FirstName + " " + b.LastName,
+                                DatePublished = b.DatePublished
+                            }).OrderBy(x => x.Title).ToList();
+
+                if(books == null) { return null; }
+                else { return books; }
             }
-            else{
-                return books;
+            else {
+                var books = (from l in _db.Loans
+                             where l.hasReturned == false
+                             join b in _db.Books on l.bookID equals b.ID
+                             select new BookViewModel {
+                                Title = b.Title,
+                                Author = b.FirstName + " " + b.LastName,
+                                DatePublished = b.DatePublished
+                            }).OrderBy(x => x.Title).ToList();
+
+                if(books == null) { return null; }
+                else { return books; }
             }
         }
 
