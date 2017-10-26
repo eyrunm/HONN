@@ -31,7 +31,7 @@ namespace LibraryAPI.Services
 
         public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
         {
-            var users = _repo.GetAllUsers(LoanDate);
+            var users = _repo.GetAllUsers(LoanDate, LoanDuration);
             if(users != null){
                 return users;
             }
