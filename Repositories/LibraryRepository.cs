@@ -615,7 +615,9 @@ namespace LibraryAPI.Repositories
             }
             return reviews;
         }
-
+        /// <summary>
+        /// Returns all reviews for a book with the given ID
+        /// </summary>
         public IEnumerable<ReviewViewModel> GetAllReviewsForBook(int bookID)
         {
             var book = _db.Books.SingleOrDefault(b => b.ID == bookID);
@@ -635,7 +637,9 @@ namespace LibraryAPI.Repositories
             }
             return reviews;
         }
-
+        /// <summary>
+        /// Returns a review by the user with the given userID for a book with the given bookID
+        /// </summary>
         public ReviewViewModel GetReviewForBookByUser(int bookID, int userID)
         {
             var review = GetReviewByUserForBook(userID, bookID);

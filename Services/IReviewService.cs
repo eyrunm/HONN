@@ -12,5 +12,8 @@ namespace LibraryAPI.Services
         ReviewViewModel GetReviewByUserForBook(int userID, int bookID);
         void DeleteReviewByUserForBook(int userID, int bookID);
         ReviewViewModel UpdateReviewByUser(RatingDTO rating, int userID, int bookID);
+
+        IEnumerable<ReviewViewModel> GetAllReviewsForAllBooks();
+        IEnumerable<ReviewViewModel> GetAllReviewsForBook(int bookID);
     }
 }

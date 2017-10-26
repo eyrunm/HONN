@@ -130,7 +130,7 @@ namespace LibraryAPI.Controllers
         public IActionResult GetAllReviewsForAllBooks()
         {
             try{
-                var reviews =  _bookService.GetAllReviewsForAllBooks();
+                var reviews =  _reviewService.GetAllReviewsForAllBooks();
                 return Ok(reviews);
             }
             catch(ObjectNotFoundException e){
@@ -147,7 +147,7 @@ namespace LibraryAPI.Controllers
         public IActionResult GetAllReviewsForBook(int bookID)
         {
             try{
-                var reviews =  _bookService.GetAllReviewsForBook(bookID);
+                var reviews =  _reviewService.GetAllReviewsForBook(bookID);
                 return Ok(reviews);
             }
             catch(ObjectNotFoundException e){
@@ -166,7 +166,7 @@ namespace LibraryAPI.Controllers
         public IActionResult GetReviewForBookByUser(int bookID, int userID)
         {
             try{
-                var review =  _bookService.GetReviewForBookByUser(bookID, userID);
+                var review =  _reviewService.GetReviewByUserForBook(userID, bookID);
                 return Ok(review);
             }
             catch(ObjectNotFoundException e){
@@ -178,7 +178,7 @@ namespace LibraryAPI.Controllers
             }
         }
 
-                /// <summary>
+        /// <summary>
         /// Returns a review by the user with the given userID for a book with the given bookID
         /// </summary>
         /// <param name="bookID">An integer id for the book</param>        
@@ -189,8 +189,31 @@ namespace LibraryAPI.Controllers
         public IActionResult UpdateReviewForBookByUser([FromBody] RatingDTO rating, int bookID, int userID)
         {
             try{
-                var review =  _bookService.UpdateReviewForBookByUser(rating, bookID, userID);
+                var review =  _reviewService.UpdateReviewByUser(rating, userID, bookID);
                 return Ok(review);
+            }
+            catch(ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
+
+            catch(RatingException e){
+                return StatusCode(404, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Deletes the review by the user with the given userID for a book with the given bookID
+        /// </summary>
+        /// <param name="bookID">An integer id for the book</param>        
+        /// <param name="userID">An integer id for the book</param>
+
+        // DELETE api/books/reviews/bookID/reviews/userID
+        [HttpDelete("books/{bookID}/reviews/{userID}")]
+        public IActionResult DeleteReviewForBookByUser(int bookID, int userID)
+        {
+            try{
+                _reviewService.DeleteReviewByUserForBook(userID, bookID);
+                return NoContent();
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(404, e.Message);

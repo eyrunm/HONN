@@ -44,5 +44,18 @@ namespace LibraryAPI.Services
             
             return review;
         }
+
+        
+        public IEnumerable<ReviewViewModel> GetAllReviewsForAllBooks()
+        {
+            var reviews = _repo.GetAllReviewsForAllBooks();
+            return reviews;
+        }
+
+        public IEnumerable<ReviewViewModel> GetAllReviewsForBook(int bookID)
+        {
+            var reviews = _repo.GetAllReviewsForBook(bookID);
+            return reviews;
+        }
     }
 }
