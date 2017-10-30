@@ -26,7 +26,7 @@ namespace LibraryAPI.Test
         {
             /// Arrange
             ///Act
-            var users = _userService.GetAllUsers(null, null);
+            var users = _userService.GetAllUsers(null, 0);
             ///Assert
             Assert.IsNotNull(users);
         }
@@ -36,9 +36,9 @@ namespace LibraryAPI.Test
         {
             /// Arrange
             String Date = "2015-10-12";
-            DateTime LoanDate = Convert.ToDateTime(Date);
+            //DateTime LoanDate = Convert.ToDateTime(Date);
             ///Act
-            var users = _userService.GetAllUsers(LoanDate, null);
+            var users = _userService.GetAllUsers(Date, 0);
             ///Assert   
             Assert.IsNotNull(users);
         }
@@ -73,7 +73,7 @@ namespace LibraryAPI.Test
             /// Act
             _repo.AddNewUser(model);
             /// Assert
-            var newUser = _userService.GetAllUsers(null, null).Last();
+            var newUser = _userService.GetAllUsers(null, 0).Last();
 			// Tests if values are valid
             Assert.IsNotNull(newUser);
             Assert.AreEqual(FirstName + " " + LastName, newUser.Name);
@@ -129,10 +129,10 @@ namespace LibraryAPI.Test
         public void deleteUserById_validValues()
         {
             /// Arrange
-            var count = _userService.GetAllUsers(null, null).Count();
+            var count = _userService.GetAllUsers(null, 0).Count();
             /// Act
             _userService.DeleteUserById(1);
-            var afterCount = _userService.GetAllUsers(null, null).Count();
+            var afterCount = _userService.GetAllUsers(null, 0).Count();
             /// Assert
             Assert.AreEqual(count-1, afterCount);
         }

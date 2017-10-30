@@ -49,14 +49,14 @@ namespace LibraryAPI.Test
             var Title ="Harry Potter and the sorcerer's stone";
             var FirstName = "J K";
             var LastName = "Rowling";
-            var DatePublished = "26-06-1997";
+            var DatePublished = Convert.ToDateTime("26-06-1997");
             /// Arrange
             var model = new Book
 			{
 				ID = 4, 
                 Title ="Harry Potter and the sorcerer's stone", 
                 FirstName = "J K", LastName = "Rowling", 
-                DatePublished = "26-06-1997", 
+                DatePublished = Convert.ToDateTime("26-06-1997"), 
                 ISBN = "123456789"
 			};
             /// Act
@@ -80,7 +80,7 @@ namespace LibraryAPI.Test
 			{
 				ID = 4, 
                 FirstName = "J K", LastName = "Rowling", 
-                DatePublished = "26-06-1997", 
+                DatePublished = Convert.ToDateTime("26-06-1997"), 
                 ISBN = "123456789"
 			};
             /// Act
@@ -93,7 +93,7 @@ namespace LibraryAPI.Test
             var Title ="Harry Potter and the chamber of secrets";
             var FirstName = "J K";
             var LastName = "Rowling";
-            var DatePublished = "02-07-1998"; 
+            var DatePublished = Convert.ToDateTime("02-07-1998"); 
             var ISBN = "234567890";
 
             /// Arrange
@@ -150,7 +150,7 @@ namespace LibraryAPI.Test
 			{
 				Title = "Harry Potter and the sorcerer's stone",
                 FirstName = "J.K.", LastName = "Rowling", 
-                DatePublished = "26-06-1997", 
+                DatePublished = Convert.ToDateTime("26-06-1997"), 
                 ISBN = "1122334455"
 			};
             /// Act
@@ -172,7 +172,7 @@ namespace LibraryAPI.Test
             var updateModel = new Book
 			{
                 FirstName = "J K", LastName = "Rowling", 
-                DatePublished = "26-06-1997", 
+                DatePublished = Convert.ToDateTime("26-06-1997"), 
                 ISBN = "123456789"
 			};
             /// Act

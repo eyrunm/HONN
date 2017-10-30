@@ -703,7 +703,8 @@ namespace LibraryAPI.Repositories
         public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID)
         {
             var ratedBooks = (from x in _db.Reviews where x.friendID == userID select x).ToList();
-            if(ratedBooks.Count() == 0){        // if the user has not rated any books we just return the 5 top rated books
+            var rentedBooks = (from x in _db.Loans where x.friendID == userID select x).ToList();
+            if(ratedBooks.Count() == 0 || rentedBooks.Count() == 0){        // if the user has not rated any books we just return the 5 top rated books
                 var recommendations = (from b in _db.Books
                                         join r in _db.Reviews on b.ID equals r.bookID
                                         where r.Rating == 5 || r.Rating == 4
