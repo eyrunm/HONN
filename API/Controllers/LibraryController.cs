@@ -28,7 +28,6 @@ namespace LibraryAPI.Controllers
               _recommendationService = recommendationService;
               _reportingService = reportingService;
               _reviewService = reviewService;
-              bookService.OnStart();
         }
 
         /// <summary>
@@ -39,8 +38,13 @@ namespace LibraryAPI.Controllers
         [Route("books")]
         public IActionResult GetAllBooks(DateTime? LoanDate)
         {
-            var books = _bookService.GetAllBooks(LoanDate);
-            return Ok( books);
+            try{
+                var books = _bookService.GetAllBooks(LoanDate);
+                return Ok( books);
+            }
+            catch (ObjectNotFoundException e){
+                return StatusCode(404, e.Message);
+            }
         }
 
         /// <summary>
@@ -56,7 +60,6 @@ namespace LibraryAPI.Controllers
                 return Ok(bookItem);
             }
             catch(ObjectNotFoundException e){
-                Console.WriteLine("book not found");
                 return StatusCode(404, e.Message);
             }
         }

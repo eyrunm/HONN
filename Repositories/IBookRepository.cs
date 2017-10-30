@@ -14,6 +14,5 @@ namespace LibraryAPI.Repositories
         void AddNewBook(Book newBook);
         void DeleteBookByID(int bookID);
         Book UpdateBookByID(Book updatedBook, int bookID);
-
     }
 }

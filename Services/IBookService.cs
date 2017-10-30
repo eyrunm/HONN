@@ -14,6 +14,5 @@ namespace LibraryAPI.Services
         void DeleteBookByID(int bookID);
         Book UpdateBookByID(Book updatedBook, int bookID);
 
-        void OnStart();
     }
 }

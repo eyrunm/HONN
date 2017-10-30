@@ -28,6 +28,7 @@ namespace LibraryAPI
         {
             services.AddMvc();
             services.AddTransient<ILibraryRepository, LibraryRepository>();
+            services.AddTransient<IBookRepository, BookRepository>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<IReportingService, ReportingService>();

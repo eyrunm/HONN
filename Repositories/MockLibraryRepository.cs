@@ -415,5 +415,15 @@ namespace LibraryAPI.Repositories
 
             return user;
         }
+
+        public ICollection<Loan> GetLoans(){
+            return _loans;
+        }
+        public ICollection<Review> GetReviews(){
+            return _reviews;
+        }
+        public ICollection<Friend> GetFriends(){
+            return _friends;
+        }
     }
 }

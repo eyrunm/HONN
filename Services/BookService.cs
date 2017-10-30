@@ -9,8 +9,8 @@ namespace LibraryAPI.Services
 {
     public class BookService : IBookService
     {
-        private ILibraryRepository _repo;
-        public BookService(ILibraryRepository repo)
+        private IBookRepository _repo;
+        public BookService(IBookRepository repo)
         {
             _repo = repo;
         }
@@ -35,16 +35,10 @@ namespace LibraryAPI.Services
             }
         }
 
-
         public BookDetailsViewModel getBookByID(int book_id)
         {
            var book = _repo.GetBookByID(book_id);
            return book;
-        }
-
-        public void OnStart()
-        {
-            _repo.OnStart();
         }
 
         public Book UpdateBookByID(Book updatedBook, int bookID)

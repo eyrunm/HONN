@@ -12,12 +12,12 @@ namespace LibraryAPI.Test
     public class BookServiceTests
     {
         private IBookService _bookService;
-        private ILibraryRepository _repo;
+        private IBookRepository _repo;
 
         [TestInitialize]
         public void Setup(){
             /// This method is executed before every single test
-            _repo = new MockLibraryRepository();
+            _repo = new MockBookRepository();
             _bookService = new BookService(_repo);
         }
 

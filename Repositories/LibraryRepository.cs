@@ -14,6 +14,7 @@ namespace LibraryAPI.Repositories
     public class LibraryRepository : ILibraryRepository
     {
         private AppDataContext _db;
+        //private readonly BookRepository _bookRepo;
         
         //should maybe make helper functions for checking if users-books-reviews-loans exist in the db
         public LibraryRepository(AppDataContext db)
@@ -30,40 +31,12 @@ namespace LibraryAPI.Repositories
             FillBooks();
             FillFriendsAndLoans();
         }
-
-    /// <summary>
-	/// Fills the database table books with data from JSON files
-    /// If the database is empty
-	/// </summary>
-        private void FillBooks(){
-            if(!_db.Books.Any()){
-                using (StreamReader r = new StreamReader("books.json"))
-                {
-                    string json = r.ReadToEnd();
-                    List<Bok> Books = JsonConvert.DeserializeObject<List<Bok>>(json);
-                    foreach(var b in Books){
-                        _db.Books.Add(new Book{
-                            ID = b.bok_id,
-                            Title = b.bok_titill,
-                            FirstName = b.fornafn_hofundar,
-                            LastName = b.eftirnafn_hofundar,
-                            DatePublished = Convert.ToDateTime(b.utgafudagur),
-                            ISBN = b.ISBN
-                        });
-                    }
-                    _db.SaveChanges();
-                    }
-                }
-            else{
-                return;
-            }
-        }
         
     /// <summary>
 	/// Fills the database tables Friends and Loans with data from JSON files
     /// If the database is empty
 	/// </summary>
-        private void FillFriendsAndLoans(){
+        public void FillFriendsAndLoans(){
             if(!_db.Friends.Any()){
                 using (StreamReader r = new StreamReader("friends.json"))
                 {
@@ -94,6 +67,34 @@ namespace LibraryAPI.Repositories
                     _db.SaveChanges();
                 }
             }
+            else{
+                return;
+            }
+        }
+
+            /// <summary>
+	/// Fills the database table books with data from JSON files
+    /// If the database is empty
+	/// </summary>
+        public void FillBooks(){
+            if(!_db.Books.Any()){
+                using (StreamReader r = new StreamReader("books.json"))
+                {
+                    string json = r.ReadToEnd();
+                    List<Bok> Books = JsonConvert.DeserializeObject<List<Bok>>(json);
+                    foreach(var b in Books){
+                        _db.Books.Add(new Book{
+                            ID = b.bok_id,
+                            Title = b.bok_titill,
+                            FirstName = b.fornafn_hofundar,
+                            LastName = b.eftirnafn_hofundar,
+                            DatePublished = Convert.ToDateTime(b.utgafudagur),
+                            ISBN = b.ISBN
+                        });
+                    }
+                    _db.SaveChanges();
+                    }
+                }
             else{
                 return;
             }
@@ -371,7 +372,10 @@ namespace LibraryAPI.Repositories
                                 AuthorLastName = (from b in _db.Books
                                         where b.ID == r.bookID
                                         select b.LastName).SingleOrDefault(),
-                                Rating = r.Rating
+                                Rating = r.Rating,
+                                DatePublished = (from b in _db.Books
+                                        where b.ID == r.bookID
+                                        select b.DatePublished).SingleOrDefault().ToString()
                                 }).ToList();
             return reviews;
         }
@@ -435,7 +439,10 @@ namespace LibraryAPI.Repositories
                                 BookTitle = book.Title,
                                 AuthorFirstName = book.FirstName,
                                 AuthorLastName = book.LastName,
-                                Rating = r.Rating
+                                Rating = r.Rating,
+                                DatePublished = (from b in _db.Books
+                                        where b.ID == r.bookID
+                                        select b.DatePublished).SingleOrDefault().ToString()
                             }).SingleOrDefault();
             if(review == null){
                 throw new RatingException("No review by user with the given ID for a book with the given ID has been made");
@@ -509,7 +516,7 @@ namespace LibraryAPI.Repositories
 
 
 ///Book Related Functions -----------------------------------------------------------------------------------------------------------
-
+/* 
     ///<summary>
 	///Returns all books in the database 
     ///(maybe it should only return books that are not being borrowed)
@@ -648,7 +655,7 @@ namespace LibraryAPI.Repositories
             return book;
             
         }
-
+*/
         public IEnumerable<ReviewViewModel> GetAllReviewsForAllBooks()
         {
             var reviews = (from r in _db.Reviews
@@ -704,16 +711,17 @@ namespace LibraryAPI.Repositories
         {
             var ratedBooks = (from x in _db.Reviews where x.friendID == userID select x).ToList();
             var rentedBooks = (from x in _db.Loans where x.friendID == userID select x).ToList();
-            if(ratedBooks.Count() == 0 || rentedBooks.Count() == 0){        // if the user has not rated any books we just return the 5 top rated books
+            if(ratedBooks.Count() == 0 || rentedBooks.Count() == 0){        
+                // if the user has not rated or read any books just return the 5 top rated books
                 var recommendations = (from b in _db.Books
                                         join r in _db.Reviews on b.ID equals r.bookID
-                                        where r.Rating == 5 || r.Rating == 4
+                                        where r.Rating > 4
                                         select new RecommendationViewModel {
                                                     Title = b.Title,
                                                     Author = b.FirstName + " " + b.LastName,
                                                     DatePublished = b.DatePublished,
                                                     ISBN = b.ISBN
-                                        }).Distinct().Take(5).ToList();
+                                        }).Distinct().OrderBy(x => x.Title).Take(5).ToList();
                 if(recommendations == null){
                     throw new ObjectNotFoundException("cannot find top rated books");
                 }
@@ -748,13 +756,14 @@ namespace LibraryAPI.Repositories
                 if(recommendations.Count() == 0){        // there were no more books by his favourite author
                     recommendations = (from b in _db.Books
                                         join r in _db.Reviews on b.ID equals r.bookID
-                                        where r.Rating == 5 || r.Rating == 4
+                                        join l in _db.Loans on b.ID equals l.bookID
+                                        where r.Rating >= 4 && l.friendID != userID
                                         select new RecommendationViewModel {
                                                     Title = b.Title,
                                                     Author = b.FirstName + " " + b.LastName,
                                                     DatePublished = b.DatePublished,
                                                     ISBN = b.ISBN
-                                        }).Distinct().Take(5).ToList();
+                                        }).Distinct().OrderBy(x => x.Title).Take(5).ToList();
                 }
                 return recommendations;                
             }
