@@ -234,7 +234,7 @@ namespace LibraryAPI.Repositories
                                 AuthorFirstName = b.FirstName,
                                 AuthorLastName = b.LastName,
                                 Rating = r.Rating,
-                                DatePublished = b.DatePublished
+                                DatePublished = b.DatePublished.ToString()
                             }).ToList();
             }
             return reviews;
@@ -253,8 +253,8 @@ namespace LibraryAPI.Repositories
         public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
         {
             List<UserViewModel> users = new List<UserViewModel>();     
-            if(LoanDuration != null){
-                DateTime dt = LoanDate.Value;
+            if(LoanDuration != 0){
+                DateTime dt = Convert.ToDateTime(LoanDate);
                 users = (from f in _friends
                          join l in _loans on f.ID equals l.friendID
                          join b in _books on l.bookID equals b.ID
@@ -271,7 +271,7 @@ namespace LibraryAPI.Repositories
                 return users;                
             }
             else if(LoanDate != null) {
-                DateTime dt = LoanDate.Value;
+                DateTime dt = Convert.ToDateTime(LoanDate);
                 users = (from f in _friends
                          join l in _loans on f.ID equals l.friendID
                          where DateTime.Compare(dt, l.DateBorrowed) < 0
