@@ -701,16 +701,18 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID)
         {
-            var recommendations = (from r in _db.Reviews
-                                join l in _db.Loans on r.bookID equals l.bookID
-                                join b in _db.Books on l.bookID equals b.ID
-                                where l.friendID != userID
-                                where r.friendID != userID
+            var recommendations = (from b in _db.Books
+                                    join l in _db.Loans on b.ID equals l.bookID
+                                    join r in _db.Reviews on b.ID equals r.bookID
+                                    where l.friendID != userID
                                 select new RecommendationViewModel{
                                         BookTitle = b.Title,
                                         AuthorFirstName = b.FirstName,
-                                        AuthorLastName = b.LastName
-                                        }).OrderBy(x => x.BookTitle).Take(10).ToList();
+                                        AuthorLastName = b.LastName,
+                                        Rating = (from r in _db.Reviews
+                                                where r.bookID == b.ID
+                                                select r.Rating).Average(),
+                            }).Distinct().ToList();
 
             /*var unread = (from l in _db.Loans
                             where l.friendID != userID
