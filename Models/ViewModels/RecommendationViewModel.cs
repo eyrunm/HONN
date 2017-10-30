@@ -8,32 +8,26 @@ namespace LibraryAPI.Models.ViewModels
 	/// </summary>
     public class RecommendationViewModel
     {
-	/// <summary>
-	/// The title of the book
-	/// </summary>
-        public String BookTitle { get; set; }
-
-	/// <summary>
-	/// The Author of the book
-	/// </summary>
-        public String AuthorFirstName { get; set; }
 
     /// <summary>
-	/// The Author of the book
+	/// The title of the book
 	/// </summary>
-        public String AuthorLastName { get; set; } 
+        public String Title { get; set; }
 
+    /// <summary>
+	/// The name of the book's author
+	/// </summary>
+        public String Author { get; set; }
 
-    ///<summary>
-    ///The Average Rating of the book
-    /// a number between 1 and 5
-    ///</summary>
-        public double Rating { get; set; }
+    /// <summary>
+	/// The date the book was published
+	/// </summary>
+        public DateTime DatePublished { get; set; }
 
-    ///<summary>
-    /// A count of how many times the book has been rented
-    ///</summary>
-       // public int LoanCount { get; set; }
+    /// <summary>
+	/// The ISBN number for the book
+	/// </summary>
+        public String ISBN { get; set; }
 
     }
 }

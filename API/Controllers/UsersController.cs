@@ -30,10 +30,15 @@ namespace LibraryAPI.Controllers
         // GET api/users
         [HttpGet]
         [Route("users")]
-        public IActionResult GetAllUsers(DateTime? LoanDate, int? LoanDuration)
+        public IActionResult GetAllUsers(String LoanDate = "", int LoanDuration = 0)
         {
-            var users = _userService.GetAllUsers(LoanDate, LoanDuration);
-            return Ok(users);
+           try{
+               var users = _userService.GetAllUsers(LoanDate, LoanDuration);
+                return Ok(users);
+           }
+           catch (ObjectNotFoundException e){
+               return StatusCode(404, e.Message);
+           }
         }
 
         /// <summary>

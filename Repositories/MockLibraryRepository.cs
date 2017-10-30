@@ -23,19 +23,19 @@ namespace LibraryAPI.Repositories
                     new Book {  ID = 1, 
                                 Title ="Harry Potter and the sorcerer's stone", 
                                 FirstName = "J K", LastName = "Rowling", 
-                                DatePublished = "26-06-1997", 
+                                DatePublished = Convert.ToDateTime("26-06-1997"), 
                                 ISBN = "123456789"
                              },
                     new Book {  ID = 2, 
                                 Title ="Harry Potter and the chamber of secrets", 
                                 FirstName = "J K", LastName = "Rowling", 
-                                DatePublished = "02-07-1998", 
+                                DatePublished = Convert.ToDateTime("02-07-1998"), 
                                 ISBN = "234567890"
                             },
                     new Book {  ID = 3, 
                                 Title ="Harry Potter and the chamber of secrets", 
                                 FirstName = "J K", LastName = "Rowling", 
-                                DatePublished = "02-07-1998", 
+                                DatePublished = Convert.ToDateTime("02-07-1998"), 
                                 ISBN = "345678901"
                             }
             };
@@ -250,7 +250,7 @@ namespace LibraryAPI.Repositories
             throw new System.NotImplementedException();
         }
 
-        public IEnumerable<UserViewModel> GetAllUsers(DateTime? LoanDate, int? LoanDuration)
+        public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
         {
             List<UserViewModel> users = new List<UserViewModel>();     
             if(LoanDuration != null){

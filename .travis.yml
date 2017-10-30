@@ -3,3 +3,4 @@ dotnet: 2.0.0
 script:
 - dotnet restore API/
 - dotnet build API/
+- dotnet test Test/

@@ -22,7 +22,7 @@ namespace LibraryAPI.Models.ViewModels
     /// <summary>
 	/// The date the book was published
 	/// </summary>
-        public String DatePublished { get; set; }
+        public DateTime DatePublished { get; set; }
 
     /// <summary>
 	/// The ISBN number for the book
