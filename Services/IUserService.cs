@@ -7,7 +7,7 @@ namespace LibraryAPI.Services
 {
     public interface IUserService
     {
-        IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration);
+        IEnumerable<UserViewModel> GetAllUsers(DateTime? LoanDate, int? LoanDuration);
         UserViewModel GetUserById(int userId);
         void AddNewUser(Friend newUser);
         void DeleteUserById(int userId);

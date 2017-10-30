@@ -31,6 +31,27 @@
           "lib/netstandard1.3/AutoMapper.dll": {}
         }
       },
+      "Castle.Core/4.2.1": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "System.Collections.Specialized": "4.3.0",
+          "System.ComponentModel": "4.3.0",
+          "System.ComponentModel.TypeConverter": "4.3.0",
+          "System.Diagnostics.TraceSource": "4.3.0",
+          "System.Dynamic.Runtime": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Xml.XmlDocument": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard1.3/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/Castle.Core.dll": {}
+        }
+      },
       "Libuv/1.10.0": {
         "type": "package",
         "dependencies": {
@@ -2699,6 +2720,21 @@
           }
         }
       },
+      "Moq/4.7.142": {
+        "type": "package",
+        "dependencies": {
+          "Castle.Core": "4.2.1",
+          "NETStandard.Library": "1.6.1",
+          "System.Linq.Queryable": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard1.3/Moq.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/Moq.dll": {}
+        }
+      },
       "MSTest.TestFramework/1.2.0": {
         "type": "package",
         "compile": {
@@ -3425,6 +3461,33 @@
         },
         "compile": {
           "ref/netstandard1.0/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Diagnostics.TraceSource/4.3.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.Collections": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "runtime.native.System": "4.3.0"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Diagnostics.TraceSource.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "System.Diagnostics.Tracing/4.3.0": {
@@ -4848,6 +4911,27 @@
         "lib/netstandard1.1/AutoMapper.xml",
         "lib/netstandard1.3/AutoMapper.dll",
         "lib/netstandard1.3/AutoMapper.xml"
+      ]
+    },
+    "Castle.Core/4.2.1": {
+      "sha512": "XSNA0Gc1Zu33L+8+/3Tqt+aFu8QWS8UenVHZ7RenIP5wJfhoLrA4PnNscpxReeo5aBq8PDoGnV8rNaOzIOUo/w==",
+      "type": "package",
+      "path": "castle.core/4.2.1",
+      "files": [
+        "ASL - Apache Software Foundation License.txt",
+        "CHANGELOG.md",
+        "LICENSE",
+        "castle.core.4.2.1.nupkg.sha512",
+        "castle.core.nuspec",
+        "lib/net35/Castle.Core.dll",
+        "lib/net35/Castle.Core.xml",
+        "lib/net40/Castle.Core.dll",
+        "lib/net40/Castle.Core.xml",
+        "lib/net45/Castle.Core.dll",
+        "lib/net45/Castle.Core.xml",
+        "lib/netstandard1.3/Castle.Core.dll",
+        "lib/netstandard1.3/Castle.Core.xml",
+        "readme.txt"
       ]
     },
     "Libuv/1.10.0": {
@@ -7492,6 +7576,21 @@
         "version.txt"
       ]
     },
+    "Moq/4.7.142": {
+      "sha512": "LeQTESlgZJMYWpyLX/jQLkIx2Uf9CLTu9WfO2o/W0gl+qduhTRDqviVGPlP36RHfCwhNMDf42WSNhIFWbyj8aQ==",
+      "type": "package",
+      "path": "moq/4.7.142",
+      "files": [
+        "lib/net45/Moq.dll",
+        "lib/net45/Moq.pdb",
+        "lib/net45/Moq.xml",
+        "lib/netstandard1.3/Moq.dll",
+        "lib/netstandard1.3/Moq.pdb",
+        "lib/netstandard1.3/Moq.xml",
+        "moq.4.7.142.nupkg.sha512",
+        "moq.nuspec"
+      ]
+    },
     "MSTest.TestFramework/1.2.0": {
       "sha512": "8MLtlVC0UrqrMeE7V4VmSEFiApgvtUHLizJv0W1DTCOrxyY4YPhlbcClUkLtw4I5sD5P/YWP2S+rL3/MW2pM3Q==",
       "type": "package",
@@ -9087,6 +9186,45 @@
         "ref/xamarinwatchos10/_._",
         "system.diagnostics.tools.4.3.0.nupkg.sha512",
         "system.diagnostics.tools.nuspec"
+      ]
+    },
+    "System.Diagnostics.TraceSource/4.3.0": {
+      "sha512": "VnYp1NxGx8Ww731y2LJ1vpfb/DKVNKEZ8Jsh5SgQTZREL/YpWRArgh9pI8CDLmgHspZmLL697CaLvH85qQpRiw==",
+      "type": "package",
+      "path": "system.diagnostics.tracesource/4.3.0",
+      "files": [
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.Diagnostics.TraceSource.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/System.Diagnostics.TraceSource.dll",
+        "ref/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "ref/netstandard1.3/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/de/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/es/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/fr/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/it/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ja/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ko/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/ru/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/zh-hans/System.Diagnostics.TraceSource.xml",
+        "ref/netstandard1.3/zh-hant/System.Diagnostics.TraceSource.xml",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "runtimes/win/lib/net46/System.Diagnostics.TraceSource.dll",
+        "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll",
+        "system.diagnostics.tracesource.4.3.0.nupkg.sha512",
+        "system.diagnostics.tracesource.nuspec"
       ]
     },
     "System.Diagnostics.Tracing/4.3.0": {
@@ -12746,28 +12884,29 @@
       "Microsoft.AspNetCore.All >= 2.0.0",
       "Microsoft.NETCore.App >= 2.0.0",
       "Models >= 1.0.0",
+      "Moq >= 4.7.142",
       "Newtonsoft.Json >= 10.0.1",
       "Services >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\AnítaSól\\.nuget\\packages\\": {},
+    "C:\\Users\\Notandi\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\API\\api.csproj",
+      "projectUniqueName": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\API\\api.csproj",
       "projectName": "api",
-      "projectPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\API\\api.csproj",
-      "packagesPath": "C:\\Users\\AnítaSól\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\API\\obj\\",
+      "projectPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\API\\api.csproj",
+      "packagesPath": "C:\\Users\\Notandi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\AnítaSól\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Notandi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -12780,11 +12919,11 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Services\\Services.csproj": {
-              "projectPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Services\\Services.csproj"
+            "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Services\\Services.csproj": {
+              "projectPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Services\\Services.csproj"
             },
-            "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Models\\Models.csproj": {
-              "projectPath": "C:\\Users\\AnítaSól\\Desktop\\Skóli\\5.önn\\Hönnun og smíði hugbúnaðar\\Lokaverkefni\\HONN\\Models\\Models.csproj"
+            "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Models\\Models.csproj": {
+              "projectPath": "C:\\Users\\Notandi\\Documents\\HR\\Hönnun og smíði hugbúnaðar\\Ass2\\Models\\Models.csproj"
             }
           }
         }
@@ -12806,6 +12945,10 @@
           "Microsoft.AspNetCore.All": {
             "target": "Package",
             "version": "2.0.0"
+          },
+          "Moq": {
+            "target": "Package",
+            "version": "4.7.142"
           },
           "MSTest.TestFramework": {
             "target": "Package",

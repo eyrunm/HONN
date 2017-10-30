@@ -84,7 +84,7 @@ namespace LibraryAPI.Repositories
                                 _db.Loans.Add(new Loan{
                                     bookID = i.bok_id,
                                     friendID = f.vinur_id,
-                                    DateBorrowed = i.bok_lanadagsetning
+                                    DateBorrowed = Convert.ToDateTime(i.bok_lanadagsetning)
                                 });
                             }
                             _db.SaveChanges();
@@ -104,35 +104,62 @@ namespace LibraryAPI.Repositories
         /// <summary>
 	    /// Fetches all users in the database
 	    /// </summary>
-        public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
+        public IEnumerable<UserViewModel> GetAllUsers(DateTime? LoanDate, int? LoanDuration)
         {
-            if(LoanDate == "" || LoanDuration == 0) {
-                var users = (from f in _db.Friends
-                            select new UserViewModel {
-                                Name = f.FirstName + " " + f.LastName,
-                                Address = f.Address,
-                                Email = f.Email,
-                                loanHistory = (from l in _db.Loans
-                                                where l.friendID == f.ID
-                                                select l).ToList()
-                            }).OrderBy(x => x.Name).ToList();
-                if(users == null) { return null; }
-                else { return users; }
-            }
-            else {
-                var users = (from l in _db.Loans
-                             where l.hasReturned == false
-                             join f in _db.Friends on l.friendID equals f.ID
+            if(LoanDate != null){
+                DateTime dt = LoanDate.Value;
+                var users = (from friend in _db.Friends
+                            join l in _db.Loans on friend.ID equals l.friendID
+                            join book in _db.Books on l.bookID equals book.ID
+                            where DateTime.Compare(dt, l.DateBorrowed) < 0
+                            where l.hasReturned == false
                              select new UserViewModel {
-                                 Name = f.FirstName + " " + f.LastName,
-                                Address = f.Address,
-                                Email = f.Email,
+                                 Name = friend.FirstName + " " + friend.LastName,
+                                Address = friend.Address,
+                                Email = friend.Email,
                                 loanHistory = (from lo in _db.Loans
-                                                where lo.friendID == f.ID
+                                                where lo.friendID == friend.ID
                                                 select lo).ToList()
                              }).OrderBy(x => x.Name).ToList();
-                if(users == null) { return null; }
-                else { return users; }
+                if(users == null){
+                    throw new ObjectNotFoundException("No users found");
+                }
+                return users; 
+            }
+            else if(LoanDuration != null){
+                    DateTime dt = LoanDate.Value;
+                    var users = (from friend in _db.Friends
+                                join l in _db.Loans on friend.ID equals l.friendID
+                                join book in _db.Books on l.bookID equals book.ID
+                                where ((DateTime.Now - l.DateBorrowed).TotalDays > LoanDuration)
+                                where l.hasReturned == false
+                                select new UserViewModel {
+                                    Name = friend.FirstName + " " + friend.LastName,
+                                    Address = friend.Address,
+                                    Email = friend.Email,
+                                    loanHistory = (from lo in _db.Loans
+                                                    where lo.friendID == friend.ID
+                                                    select lo).ToList()
+                                }).OrderBy(x => x.Name).ToList();
+                if(users == null){
+                    throw new ObjectNotFoundException("No users found");
+                }
+                return users;
+            }
+            else {
+                var users = (from f in _db.Friends
+                        select new UserViewModel {
+                            Name = f.FirstName + " " + f.LastName,
+                            Address = f.Address,
+                            Email = f.Email,
+                            loanHistory = (from l in _db.Loans
+                                            where l.friendID == f.ID
+                                            select l).ToList()
+                            }).OrderBy(x => x.Name).ToList();
+                if(users == null){
+                    throw new ObjectNotFoundException("No users found");
+                }
+                return users; 
             }
         }
 
@@ -265,7 +292,7 @@ namespace LibraryAPI.Repositories
                     new Loan { 
                         bookID = bookId, 
                         friendID = userId, 
-                        DateBorrowed = DateTime.Now.ToString("yyyy-MM-dd") 
+                        DateBorrowed = DateTime.Today
                     }
                 );
             _db.SaveChanges();
@@ -486,32 +513,33 @@ namespace LibraryAPI.Repositories
 	///Returns all books in the database 
     ///(maybe it should only return books that are not being borrowed)
 	/// </summary>
-        public IEnumerable<BookViewModel> GetAllBooks(String LoanDate)
-        {
-            if(LoanDate == "") {
-                var books = (from b in _db.Books
+        public IEnumerable<BookViewModel> GetAllBooks(DateTime? LoanDate)
+        {       
+            List<BookViewModel> books;     
+            if(LoanDate == null){
+                books = (from b in _db.Books
                             select new BookViewModel{
                                 Title = b.Title,
                                 Author = b.FirstName + " " + b.LastName,
                                 DatePublished = b.DatePublished
                             }).OrderBy(x => x.Title).ToList();
-
-                if(books == null) { return null; }
-                else { return books; }
             }
             else {
-                var books = (from l in _db.Loans
-                             where l.hasReturned == false
-                             join b in _db.Books on l.bookID equals b.ID
-                             select new BookViewModel {
+                DateTime dt = LoanDate.Value;
+                books = (from b in _db.Books
+                            join l in _db.Loans on b.ID equals l.bookID
+                            where l.hasReturned == false
+                            where DateTime.Compare(dt, l.DateBorrowed) < 0
+                            select new BookViewModel{
                                 Title = b.Title,
                                 Author = b.FirstName + " " + b.LastName,
                                 DatePublished = b.DatePublished
-                            }).OrderBy(x => x.Title).ToList();
-
-                if(books == null) { return null; }
-                else { return books; }
+                                }).ToList();          
             }
+            if( books == null){
+                    throw new ObjectNotFoundException("No books found");
+            }
+            return books;
         }
 
     /// <summary>
@@ -673,51 +701,40 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID)
         {
-            /*var topRatedBooks = (from r in _db.Reviews
+            var recommendations = (from r in _db.Reviews
+                                join l in _db.Loans on r.bookID equals l.bookID
+                                join b in _db.Books on l.bookID equals b.ID
+                                where l.friendID != userID
                                 where r.friendID != userID
-                                select r).OrderBy(x => x.Rating).Take(20);
-
-            var unread = (from l in _db.Loans
-                            where l.friendID != userID
-                            select l.bookID).ToList();
-            List<RecommendationViewModel> recommendations = new List<RecommendationViewModel>();
-            foreach(var b in topRatedBooks){
-                if(unread.Contains(b.bookID)){
-                    Book b1 = (from book in _db.Books where book.ID == b.bookID select book).SingleOrDefault();
-                    recommendations.Add(new RecommendationViewModel{
-                        BookTitle = b1.Title,
-                                    AuthorFirstName = b1.FirstName,
-                                    AuthorLastName = b1.LastName,
-                                    AverageRating = (from rating in _db.Reviews
-                                                    where rating.bookID == b.ID
-                                                    select rating.Rating).Average(),
-                                    LoanCount = (from loans in _db.Loans
-                                                    where loans.bookID == b.ID
-                                                    select loans).Count()
-                    });
-                }
-            }*/
-            var topRatedBooks = (from r in _db.Reviews
-                                where r.friendID != userID
-                                join l in _db.Loans on r.bookID equals l.bookID 
-                                    where l.friendID != userID
-                                join b in _db.Books on r.bookID equals b.ID
                                 select new RecommendationViewModel{
                                         BookTitle = b.Title,
                                         AuthorFirstName = b.FirstName,
-                                        AuthorLastName = b.LastName,
-                                        AverageRating = (from rating in _db.Reviews
-                                                    where rating.bookID == b.ID
-                                                    select rating.Rating).Average(),
-                                    LoanCount = (from loans in _db.Loans
-                                                    where loans.bookID == b.ID
-                                                    select loans).Count()
-                                }).ToList();
+                                        AuthorLastName = b.LastName
+                                        }).OrderBy(x => x.BookTitle).Take(10).ToList();
 
-            if(topRatedBooks == null){
+            /*var unread = (from l in _db.Loans
+                            where l.friendID != userID
+                            select l).ToList();
+            
+            List<RecommendationViewModel> recommendations = new List<RecommendationViewModel>();
+            foreach (Review r in topRatedBooks){
+                foreach(Loan l in unread){
+                    if(r.bookID == l.bookID){
+                        Book b1 = (from book in _db.Books where book.ID == l.bookID select book).SingleOrDefault();
+                        recommendations.Add(new RecommendationViewModel{
+                                    BookTitle = b1.Title,
+                                    AuthorFirstName = b1.FirstName,
+                                    AuthorLastName = b1.LastName,
+                                    Rating = r.Rating
+                        });
+                    }
+                }
+            }*/
+            if(recommendations == null){
                 throw new ObjectNotFoundException("cannot find top rated books");
             }
-            return topRatedBooks;
+            return recommendations;
+            
         }
     }
 }
