@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace api.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20171025225402_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20171027163924_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,7 +63,9 @@ namespace api.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("DateBorrowed");
+                    b.Property<DateTime>("DateBorrowed");
+
+                    b.Property<DateTime?>("DateReturned");
 
                     b.Property<int>("bookID");
 

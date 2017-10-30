@@ -30,7 +30,7 @@ namespace LibraryAPI.Controllers
         // GET api/users
         [HttpGet]
         [Route("users")]
-        public IActionResult GetAllUsers(String LoanDate = "", int LoanDuration = 0)
+        public IActionResult GetAllUsers(DateTime? LoanDate, int? LoanDuration)
         {
             var users = _userService.GetAllUsers(LoanDate, LoanDuration);
             return Ok(users);

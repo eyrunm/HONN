@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace api.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,7 +47,8 @@ namespace api.Migrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    DateBorrowed = table.Column<string>(type: "TEXT", nullable: true),
+                    DateBorrowed = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DateReturned = table.Column<DateTime>(type: "TEXT", nullable: true),
                     bookID = table.Column<int>(type: "INTEGER", nullable: false),
                     friendID = table.Column<int>(type: "INTEGER", nullable: false),
                     hasReturned = table.Column<bool>(type: "INTEGER", nullable: false)

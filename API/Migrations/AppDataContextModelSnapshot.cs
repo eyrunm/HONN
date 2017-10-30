@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace api.Migrations
@@ -61,7 +62,9 @@ namespace api.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("DateBorrowed");
+                    b.Property<DateTime>("DateBorrowed");
+
+                    b.Property<DateTime?>("DateReturned");
 
                     b.Property<int>("bookID");
 

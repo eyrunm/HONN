@@ -28,12 +28,12 @@ namespace LibraryAPI.Models.ViewModels
     ///The Average Rating of the book
     /// a number between 1 and 5
     ///</summary>
-        public double AverageRating { get; set; }
+        //public double Rating { get; set; }
 
     ///<summary>
     /// A count of how many times the book has been rented
     ///</summary>
-        public int LoanCount { get; set; }
+       // public int LoanCount { get; set; }
 
     }
 }
