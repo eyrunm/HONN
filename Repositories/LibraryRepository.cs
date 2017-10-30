@@ -47,7 +47,7 @@ namespace LibraryAPI.Repositories
                             Title = b.bok_titill,
                             FirstName = b.fornafn_hofundar,
                             LastName = b.eftirnafn_hofundar,
-                            DatePublished = b.utgafudagur,
+                            DatePublished = Convert.ToDateTime(b.utgafudagur),
                             ISBN = b.ISBN
                         });
                     }
@@ -84,7 +84,8 @@ namespace LibraryAPI.Repositories
                                 _db.Loans.Add(new Loan{
                                     bookID = i.bok_id,
                                     friendID = f.vinur_id,
-                                    DateBorrowed = Convert.ToDateTime(i.bok_lanadagsetning)
+                                    DateBorrowed = Convert.ToDateTime(i.bok_lanadagsetning),
+                                    hasReturned = false,
                                 });
                             }
                             _db.SaveChanges();
@@ -104,14 +105,14 @@ namespace LibraryAPI.Repositories
         /// <summary>
 	    /// Fetches all users in the database
 	    /// </summary>
-        public IEnumerable<UserViewModel> GetAllUsers(DateTime? LoanDate, int? LoanDuration)
+        public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
         {
-            if(LoanDate != null){
-                DateTime dt = LoanDate.Value;
+            if(!LoanDate.Equals("")){
+                DateTime dt = Convert.ToDateTime(LoanDate);
                 var users = (from friend in _db.Friends
                             join l in _db.Loans on friend.ID equals l.friendID
                             join book in _db.Books on l.bookID equals book.ID
-                            where DateTime.Compare(dt, l.DateBorrowed) < 0
+                            where DateTime.Compare(dt, l.DateBorrowed) > 0
                             where l.hasReturned == false
                              select new UserViewModel {
                                  Name = friend.FirstName + " " + friend.LastName,
@@ -126,12 +127,12 @@ namespace LibraryAPI.Repositories
                 }
                 return users; 
             }
-            else if(LoanDuration != null){
-                    DateTime dt = LoanDate.Value;
+            else if(LoanDuration != 0){
+                DateTime dt = DateTime.Now.AddDays(-LoanDuration);
                     var users = (from friend in _db.Friends
                                 join l in _db.Loans on friend.ID equals l.friendID
                                 join book in _db.Books on l.bookID equals book.ID
-                                where ((DateTime.Now - l.DateBorrowed).TotalDays > LoanDuration)
+                                where DateTime.Compare(dt, l.DateBorrowed) < 0
                                 where l.hasReturned == false
                                 select new UserViewModel {
                                     Name = friend.FirstName + " " + friend.LastName,
@@ -701,42 +702,61 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID)
         {
-            var recommendations = (from b in _db.Books
-                                    join l in _db.Loans on b.ID equals l.bookID
-                                    join r in _db.Reviews on b.ID equals r.bookID
-                                    where l.friendID != userID
-                                select new RecommendationViewModel{
-                                        BookTitle = b.Title,
-                                        AuthorFirstName = b.FirstName,
-                                        AuthorLastName = b.LastName,
-                                        Rating = (from r in _db.Reviews
-                                                where r.bookID == b.ID
-                                                select r.Rating).Average(),
-                            }).Distinct().ToList();
-
-            /*var unread = (from l in _db.Loans
-                            where l.friendID != userID
-                            select l).ToList();
-            
-            List<RecommendationViewModel> recommendations = new List<RecommendationViewModel>();
-            foreach (Review r in topRatedBooks){
-                foreach(Loan l in unread){
-                    if(r.bookID == l.bookID){
-                        Book b1 = (from book in _db.Books where book.ID == l.bookID select book).SingleOrDefault();
-                        recommendations.Add(new RecommendationViewModel{
-                                    BookTitle = b1.Title,
-                                    AuthorFirstName = b1.FirstName,
-                                    AuthorLastName = b1.LastName,
-                                    Rating = r.Rating
-                        });
-                    }
+            var ratedBooks = (from x in _db.Reviews where x.friendID == userID select x).ToList();
+            if(ratedBooks.Count() == 0){        // if the user has not rated any books we just return the 5 top rated books
+                var recommendations = (from b in _db.Books
+                                        join r in _db.Reviews on b.ID equals r.bookID
+                                        where r.Rating == 5 || r.Rating == 4
+                                        select new RecommendationViewModel {
+                                                    Title = b.Title,
+                                                    Author = b.FirstName + " " + b.LastName,
+                                                    DatePublished = b.DatePublished,
+                                                    ISBN = b.ISBN
+                                        }).Distinct().Take(5).ToList();
+                if(recommendations == null){
+                    throw new ObjectNotFoundException("cannot find top rated books");
                 }
-            }*/
-            if(recommendations == null){
-                throw new ObjectNotFoundException("cannot find top rated books");
+                return recommendations;
             }
-            return recommendations;
-            
+            else{         //we return the books by his favourite authors
+                    List<RecommendationViewModel> recommendations  = new List<RecommendationViewModel>();
+                    var authors = (from b in _db.Books
+                             join r in _db.Reviews on b.ID equals r.bookID
+                             where r.friendID == userID
+                             select b
+                             );
+                foreach(var a in authors)
+                {   
+                    var booksByAuthors = (from b in _db.Books
+                                        where a.LastName == b.LastName && a.FirstName == b.FirstName
+                                        && a.Title != b.Title
+                                        select new RecommendationViewModel{
+                                            Title = b.Title,
+                                                    Author = b.FirstName + " " + b.LastName,
+                                                    DatePublished = b.DatePublished,
+                                                    ISBN = b.ISBN
+                                        });
+                
+
+                    foreach(RecommendationViewModel b in booksByAuthors)
+                    {
+                        recommendations.Add(b);
+                    }   
+                }
+
+                if(recommendations.Count() == 0){        // there were no more books by his favourite author
+                    recommendations = (from b in _db.Books
+                                        join r in _db.Reviews on b.ID equals r.bookID
+                                        where r.Rating == 5 || r.Rating == 4
+                                        select new RecommendationViewModel {
+                                                    Title = b.Title,
+                                                    Author = b.FirstName + " " + b.LastName,
+                                                    DatePublished = b.DatePublished,
+                                                    ISBN = b.ISBN
+                                        }).Distinct().Take(5).ToList();
+                }
+                return recommendations;                
+            }
         }
     }
 }

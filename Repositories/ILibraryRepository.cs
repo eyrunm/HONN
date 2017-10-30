@@ -17,7 +17,7 @@ namespace LibraryAPI.Repositories
 
 
         // User functions
-        IEnumerable<UserViewModel> GetAllUsers(DateTime? LoanDate, int? LoanDuration);
+        IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration);
         UserViewModel GetUserById(int userId);
         void DeleteUserById(int userId);
         void AddNewUser(Friend newUser);
