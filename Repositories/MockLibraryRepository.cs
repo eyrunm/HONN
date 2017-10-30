@@ -42,7 +42,7 @@ namespace LibraryAPI.Repositories
 
             _friends = new List<Friend> {
                     new Friend {
-                                ID = 2, 
+                                ID = 1, 
                                 FirstName = "Sigga", LastName = "Jóns",
                                 Email = "sigga@sigga.is",
                                 Address = "laugavegur 1"
@@ -132,11 +132,17 @@ namespace LibraryAPI.Repositories
 
         public void AddNewBook(Book newBook)
         {
+            if(newBook.Title == null || newBook.FirstName == null || newBook.LastName == null || newBook.DatePublished == null || newBook.ISBN == null){
+                throw new ObjectNotFoundException("failed to add book");
+            }
             _books.Add(newBook);
         }
 
         public void AddNewUser(Friend newUser)
         {
+            if(newUser.FirstName == null || newUser.LastName == null || newUser.Email == null || newUser.Address == null){
+                throw new ObjectNotFoundException("failed to add user");
+            }
             _friends.Add(newUser);
         }
 
@@ -167,17 +173,21 @@ namespace LibraryAPI.Repositories
 
         public void DeleteBookByID(int bookID)
         {
+            var bookid = _books.SingleOrDefault(x => x.ID == bookID);
+            if(bookid == null) {
+                throw new ObjectNotFoundException("not valid book id");
+            }
             _books.Remove(_books.FirstOrDefault(x => x.ID == bookID));
         }
 
         public void DeleteReviewByUserForBook(int userID, int bookID)
         {
-            throw new System.NotImplementedException();
+            _reviews.Remove(_reviews.FirstOrDefault(x => x.friendID == userID && x.bookID == bookID));
         }
 
         public void DeleteUserById(int userId)
         {
-            throw new System.NotImplementedException();
+            _friends.Remove(_friends.FirstOrDefault(x => x.ID == userId));
         }
 
         public IEnumerable<BookViewModel> GetAllBooks(DateTime? LoanDate)
@@ -209,7 +219,25 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<ReviewViewModel> GetAllReviewsByUser(int userID)
         {
-            throw new System.NotImplementedException();
+            List<ReviewViewModel> reviews = new List<ReviewViewModel>();
+
+            var user = _friends.SingleOrDefault(x => x.ID == userID);
+            if(user == null) {
+                throw new ObjectNotFoundException("not valid user id");
+            }
+            else {
+                reviews = (from r in _reviews
+                            join b in _books on r.bookID equals b.ID
+                            where r.friendID == userID
+                            select new ReviewViewModel{
+                                BookTitle = b.Title,
+                                AuthorFirstName = b.FirstName,
+                                AuthorLastName = b.LastName,
+                                Rating = r.Rating,
+                                DatePublished = b.DatePublished
+                            }).ToList();
+            }
+            return reviews;
         }
 
         public IEnumerable<ReviewViewModel> GetAllReviewsForAllBooks()
@@ -224,12 +252,72 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<UserViewModel> GetAllUsers(DateTime? LoanDate, int? LoanDuration)
         {
-            throw new System.NotImplementedException();
+            List<UserViewModel> users = new List<UserViewModel>();     
+            if(LoanDuration != null){
+                DateTime dt = LoanDate.Value;
+                users = (from f in _friends
+                         join l in _loans on f.ID equals l.friendID
+                         join b in _books on l.bookID equals b.ID
+                         where ((DateTime.Now - l.DateBorrowed).TotalDays > LoanDuration)
+                         where l.hasReturned == false
+                         select new UserViewModel {
+                            Name = f.FirstName + " " + f.LastName,
+                            Address = f.Address,
+                            Email = f.Email,
+                            loanHistory = (from lo in _loans
+                                           where lo.friendID == f.ID
+                                           select lo).ToList()
+                            }).ToList();
+                return users;                
+            }
+            else if(LoanDate != null) {
+                DateTime dt = LoanDate.Value;
+                users = (from f in _friends
+                         join l in _loans on f.ID equals l.friendID
+                         where DateTime.Compare(dt, l.DateBorrowed) < 0
+                         select new UserViewModel{
+                            Name = f.FirstName + " " + f.LastName,
+                            Email = f.Email, 
+                            Address = f.Address,
+                            loanHistory =  (from lo in _loans
+                                            where lo.friendID == f.ID
+                                            select lo).ToList()
+                            }).ToList();
+                return users;       
+            }
+            else {
+                foreach ( var f in _friends)
+                {
+                    users.Add(new UserViewModel{
+                                Name = f.FirstName + " " + f.LastName,
+                                Email = f.Email, 
+                                Address = f.Address,
+                                loanHistory =  (from l in _loans
+                                                where l.friendID == f.ID
+                                                select l).ToList()
+                    });
+                }
+                return users;
+            }
         }
 
         public BookDetailsViewModel GetBookByID(int book_id)
         {
-            throw new System.NotImplementedException();
+            var bookid = _books.SingleOrDefault(x => x.ID == book_id);
+            if(bookid == null) {
+                throw new ObjectNotFoundException("not valid book id");
+            }
+            else {
+                var book = (from b in _books
+                        where b.ID == book_id
+                        select new BookDetailsViewModel{
+                            Title = b.Title,
+                            Author = b.FirstName + " " + b.LastName,
+                            DatePublished = b.DatePublished,
+                            ISBN = b.ISBN
+                        }).SingleOrDefault();
+                return book;
+            }
         }
 
         public IEnumerable<BookViewModel> GetBooksByUserId(int userId)
@@ -254,7 +342,23 @@ namespace LibraryAPI.Repositories
 
         public UserViewModel GetUserById(int userId)
         {
-            throw new System.NotImplementedException();
+            var userid = _friends.SingleOrDefault(x => x.ID == userId);
+            if(userid == null) {
+                throw new ObjectNotFoundException("not valid user id");
+            }
+            else {
+                var user = (from f in _friends
+                            where f.ID == userId
+                            select new UserViewModel{
+                            Name = f.FirstName + " " + f.LastName,
+                            Email = f.Email,
+                            Address = f.Address,
+                            loanHistory = (from l in _loans
+                                            where l.friendID == f.ID
+                                            select l).ToList()
+                        }).SingleOrDefault();
+                return user;
+            }
         }
 
         public void OnStart()
@@ -269,7 +373,20 @@ namespace LibraryAPI.Repositories
 
         public Book UpdateBookByID(Book updatedBook, int bookID)
         {
-            throw new System.NotImplementedException();
+            var book = _books.SingleOrDefault(x => x.ID == bookID);
+            if(book == null) {
+                throw new ObjectNotFoundException("not valid book id");
+            }
+            if(updatedBook.Title == null || updatedBook.FirstName == null || updatedBook.LastName == null || updatedBook.DatePublished == null || updatedBook.ISBN == null){
+                throw new ObjectNotFoundException("failed to update book");
+            }
+            book.Title = updatedBook.Title;
+            book.FirstName = updatedBook.FirstName;
+            book.LastName = updatedBook.LastName;
+            book.DatePublished = updatedBook.DatePublished;
+            book.ISBN = updatedBook.ISBN;
+
+            return book;
         }
 
         public Loan UpdateLoan(Loan updatedLoan, int userId, int bookId)
@@ -284,7 +401,19 @@ namespace LibraryAPI.Repositories
 
         public Friend UpdateUserById(Friend updatedUser, int userId)
         {
-            throw new System.NotImplementedException();
+            var user = _friends.SingleOrDefault(x => x.ID == userId);
+            if(user == null) {
+                throw new ObjectNotFoundException("not valid user id");
+            }
+            if(updatedUser.FirstName == null || updatedUser.LastName == null || updatedUser.Email == null || updatedUser.Address == null){
+                throw new ObjectNotFoundException("failed to add user");
+            }
+            user.FirstName = updatedUser.FirstName;
+            user.LastName = updatedUser.LastName;
+            user.Email = updatedUser.Email;
+            user.Address = updatedUser.Address;
+
+            return user;
         }
     }
 }
