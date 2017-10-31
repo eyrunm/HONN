@@ -40,12 +40,13 @@ namespace LibraryAPI.Repositories
             };
         }
 
-        public void AddNewBook(Book newBook)
+        public Book AddNewBook(Book newBook)
         {
             if(newBook.Title == null || newBook.FirstName == null || newBook.LastName == null || newBook.DatePublished == null || newBook.ISBN == null){
                 throw new ObjectNotFoundException("failed to add book");
             }
             _books.Add(newBook);
+            return newBook;
         }
 
         public void DeleteBookByID(int bookID)
