@@ -148,8 +148,6 @@ namespace LibraryAPI.Repositories
             _db.SaveChanges();
 
             return book;
-            
         }
     }
-
 }

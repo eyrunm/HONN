@@ -82,7 +82,7 @@ namespace LibraryAPI.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ObjectNotFoundException))]
+        [ExpectedException(typeof(Exception))]
         public void addNewUser_invalidValues() 
         {
             /// Arrange
