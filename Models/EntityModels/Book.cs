@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace LibraryAPI.Models.EntityModels
 {    /// <summary>
@@ -14,27 +15,32 @@ namespace LibraryAPI.Models.EntityModels
     /// <summary>
 	/// The title of the book
 	/// </summary>
+    	[Required]
         public String Title { get; set; }
 
     /// <summary>
 	/// The first name of the book's author
 	/// </summary>
+	[Required]
         public String FirstName { get; set; }
 
     /// <summary>
 	/// The last name of the book's author
 	/// </summary>
+	[Required]
         public String LastName { get; set; }
 
     /// <summary>
 	/// The date the book was published
 	/// </summary>
-        public DateTime DatePublished { get; set; }
+ 	[Required]
+     public DateTime DatePublished { get; set; }
 
     /// <summary>
 	/// The ISBN number for the book
 	/// </summary>
-        public String ISBN { get; set; }
+	[Required]
+    public String ISBN { get; set; }
 
 
     }

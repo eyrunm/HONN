@@ -17,19 +17,14 @@ namespace LibraryAPI.Repositories
         public BookRepository(AppDataContext db){    
             _db = db;
             _libRepo = new LibraryRepository(db);
+            _libRepo.OnStart();
         }
-
         
     ///<summary>
 	///Returns all books in the database 
     ///(maybe it should only return books that are not being borrowed)
 	/// </summary>
-        public IEnumerable<BookViewModel> GetAllBooks(DateTime? LoanDate)
-        {       
-            if(!_db.Books.Any()){
-                _libRepo.OnStart();
-            }
-    
+        public IEnumerable<BookViewModel> GetAllBooks(DateTime? LoanDate){     
             List<BookViewModel> books;     
             if(LoanDate == null){
                 books = (from b in _db.Books
@@ -60,8 +55,7 @@ namespace LibraryAPI.Repositories
     /// <summary>
 	/// Returns a single book with the given ID from the database
 	/// </summary>
-        public BookDetailsViewModel GetBookByID(int book_id)
-        {
+        public BookDetailsViewModel GetBookByID(int book_id){
             var book = (from b in _db.Books
                         where b.ID == book_id
                         select new BookDetailsViewModel{
@@ -85,8 +79,7 @@ namespace LibraryAPI.Repositories
 	/// Adds a new book to the database
     /// ADMIN function
 	/// </summary>
-        public void AddNewBook(Book newBook)
-        {
+        public void AddNewBook(Book newBook){
             if(newBook == null){
                 throw new ObjectNotFoundException("Book not valid");
             }
@@ -106,8 +99,7 @@ namespace LibraryAPI.Repositories
     /// associated with it, from the database
     /// ADMIN function
 	/// </summary>
-        public void DeleteBookByID(int bookID)
-        {
+        public void DeleteBookByID(int bookID){
             var book = (from b in _db.Books
                         where b.ID == bookID
                         select b).SingleOrDefault();
@@ -139,8 +131,7 @@ namespace LibraryAPI.Repositories
 	/// Updates the book with the given ID        
     /// ADMIN function
 	/// </summary>
-        public Book UpdateBookByID(Book updatedBook, int bookID)
-        {
+        public Book UpdateBookByID(Book updatedBook, int bookID){
             var book = (_db.Books.SingleOrDefault(b => b.ID == bookID));
 
             if(book == null){

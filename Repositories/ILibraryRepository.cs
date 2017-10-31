@@ -8,19 +8,11 @@ namespace LibraryAPI.Repositories
 {
     public interface ILibraryRepository
     {
-        /*// Book functions
-        IEnumerable<BookViewModel> GetAllBooks(DateTime? LoanDate);
-        BookDetailsViewModel GetBookByID(int book_id);
-        void AddNewBook(Book newBook);
-        void DeleteBookByID(int bookID);
-        Book UpdateBookByID(Book updatedBook, int bookID);*/
-
-
         // User functions
         IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration);
         UserViewModel GetUserById(int userId);
         void DeleteUserById(int userId);
-        void AddNewUser(Friend newUser);
+        Friend AddNewUser(Friend newUser);
         Friend UpdateUserById(Friend updatedUser, int userId);
         IEnumerable<BookViewModel> GetBooksByUserId(int userId);
         void AddBookToUser(int userId, int bookId);

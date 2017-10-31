@@ -71,10 +71,10 @@ namespace LibraryAPI.Controllers
                 return StatusCode(412);
             }
             try{
-                _userService.AddNewUser(newUser);
-                return StatusCode(201);
+                var user = _userService.AddNewUser(newUser);
+                return Ok(user);
             }
-            catch(ObjectNotFoundException e){
+            catch(Exception e){
                 return StatusCode(412, e.Message);
             }
         }

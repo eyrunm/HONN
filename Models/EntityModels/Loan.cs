@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace LibraryAPI.Models.EntityModels
 {
@@ -15,15 +16,18 @@ namespace LibraryAPI.Models.EntityModels
     /// <summary>
 	/// The ID of the book borrowed
 	/// </summary>
+    	[Required]
         public int bookID { get; set; }
 
 	/// <summary>
 	/// The ID of the friend
 	/// </summary>
+    	[Required]
         public int friendID { get; set; }
     /// <summary>
 	/// The date of the loan
 	/// </summary>
+    	[Required]
         public DateTime DateBorrowed { get; set; }
     
     /// <summary>

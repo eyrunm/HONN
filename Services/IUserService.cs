@@ -9,7 +9,7 @@ namespace LibraryAPI.Services
     {
         IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration);
         UserViewModel GetUserById(int userId);
-        void AddNewUser(Friend newUser);
+        Friend AddNewUser(Friend newUser);
         void DeleteUserById(int userId);
         Friend UpdateUserById(Friend updatedUser, int userId);
         IEnumerable<BookViewModel> GetBooksByUserId(int userId);

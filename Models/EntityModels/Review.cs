@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace LibraryAPI.Models.EntityModels
 {
@@ -17,17 +18,20 @@ namespace LibraryAPI.Models.EntityModels
     /// <summary>
 	/// The ID of the book being rated
 	/// </summary>
+    	[Required]
         public int bookID { get; set; }
 
 	/// <summary>
 	/// The ID of the friend
 	/// </summary>
+	    [Required]
         public int friendID { get; set; }
 
     ///<summary>
     ///The Rating of the book
     /// a number between 1 and 5
     ///</summary>
+	    [Required]
         public int Rating { get; set; }
 
     }

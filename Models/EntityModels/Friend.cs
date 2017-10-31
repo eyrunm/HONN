@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace LibraryAPI.Models.EntityModels
 {    /// <summary>
@@ -15,23 +16,22 @@ namespace LibraryAPI.Models.EntityModels
 	/// <summary>
 	/// The first name of the friend
 	/// </summary>
+	[Required]
         public String FirstName{ get; set; }
 	/// <summary>
 	/// The last name of the friend
 	/// </summary>
+	[Required]
         public String LastName { get; set; }
 	/// <summary>
 	/// The email of the friend
 	/// </summary>
+	[Required]
         public String Email { get; set; }
 	/// <summary>
 	/// The address of the friend
-	/// </summary>
+	/// </summary>	
+	[Required]
         public String Address { get; set; }
-
-    ///<summary>
-    /// A list of loan ID's the friend already has
-    /// </summary>
-        //public List<Lanasafn> Loans {get; set; }
     }
 }

@@ -138,12 +138,17 @@ namespace LibraryAPI.Repositories
             _books.Add(newBook);
         }
 
-        public void AddNewUser(Friend newUser)
+        public Friend AddNewUser(Friend newUser)
         {
             if(newUser.FirstName == null || newUser.LastName == null || newUser.Email == null || newUser.Address == null){
-                throw new ObjectNotFoundException("failed to add user");
+                throw new Exception("User not valid");
             }
-            _friends.Add(newUser);
+             _friends.Add(newUser);
+             var user = _friends.Where(x => x.ID == newUser.ID).SingleOrDefault();
+             if(user == null){
+                 throw new Exception("Failed to add user to database");
+             }
+             return user;
         }
 
         public ReviewViewModel AddReviewByUser(RatingDTO rating, int userID, int bookID)
