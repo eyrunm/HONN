@@ -78,7 +78,7 @@ namespace LibraryAPI.Controllers
             }
             try{
                 var book = _bookService.AddNewBook(newBook);
-                return Ok(book);
+                return Created(("books"), book);
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(412, e.Message);
