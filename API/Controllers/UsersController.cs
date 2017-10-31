@@ -72,7 +72,7 @@ namespace LibraryAPI.Controllers
             }
             try{
                 var user = _userService.AddNewUser(newUser);
-                return Ok(user);
+                return Created(("users"), user);
             }
             catch(Exception e){
                 return StatusCode(412, e.Message);
@@ -92,7 +92,7 @@ namespace LibraryAPI.Controllers
             if (!ModelState.IsValid) { return StatusCode(412); }
             try{
                 var user =  _userService.UpdateUserById(updatedUser, userID);
-                return Ok(user);
+                return Created(("users/{userID:int}"), user);
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(404, e.Message);
