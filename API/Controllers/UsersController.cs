@@ -151,8 +151,8 @@ namespace LibraryAPI.Controllers
                 return StatusCode(412);
             }
             try{
-                _userService.AddBookToUser(userID, bookID);
-                return StatusCode(201);
+                var book = _userService.AddBookToUser(userID, bookID);
+                return Created(book);
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(412, e.Message);

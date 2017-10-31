@@ -23,19 +23,19 @@ namespace LibraryAPI.Repositories
                     new Book {  ID = 1, 
                                 Title ="Harry Potter and the sorcerer's stone", 
                                 FirstName = "J K", LastName = "Rowling", 
-                                DatePublished = Convert.ToDateTime("26-06-1997"), 
+                                DatePublished = Convert.ToDateTime("1997-06-26"), 
                                 ISBN = "123456789"
                              },
                     new Book {  ID = 2, 
                                 Title ="Harry Potter and the chamber of secrets", 
                                 FirstName = "J K", LastName = "Rowling", 
-                                DatePublished = Convert.ToDateTime("02-07-1998"), 
+                                DatePublished = Convert.ToDateTime("1998-07-02"), 
                                 ISBN = "234567890"
                             },
                     new Book {  ID = 3, 
                                 Title ="Harry Potter and the chamber of secrets", 
                                 FirstName = "J K", LastName = "Rowling", 
-                                DatePublished = Convert.ToDateTime("02-07-1998"), 
+                                DatePublished = Convert.ToDateTime("1998-07-02"), 
                                 ISBN = "345678901"
                             }
             };

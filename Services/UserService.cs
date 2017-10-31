@@ -14,9 +14,15 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
-        public void AddBookToUser(int userId, int bookId)
+        public Book AddBookToUser(int userId, int bookId)
         {
-            _repo.AddBookToUser(userId, bookId);
+           var book = _repo.AddBookToUser(userId, bookId);
+           if(book != null){
+                return book;
+            }
+            else{
+                return null;
+            }
         }
 
         public Friend AddNewUser(Friend newUser)

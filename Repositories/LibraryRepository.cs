@@ -116,7 +116,7 @@ namespace LibraryAPI.Repositories
                                 loanHistory = (from lo in _db.Loans
                                                 where lo.friendID == friend.ID
                                                 select lo).ToList()
-                             }).OrderBy(x => x.Name).ToList();
+                             }).Distinct().OrderBy(x => x.Name).ToList();
                 if(users == null){
                     throw new ObjectNotFoundException("No users found");
                 }
@@ -127,16 +127,16 @@ namespace LibraryAPI.Repositories
                     var users = (from friend in _db.Friends
                                 join l in _db.Loans on friend.ID equals l.friendID
                                 join book in _db.Books on l.bookID equals book.ID
-                                where DateTime.Compare(dt, l.DateBorrowed) < 0
+                                where DateTime.Compare(dt, l.DateBorrowed) > 0
                                 where l.hasReturned == false
                                 select new UserViewModel {
                                     Name = friend.FirstName + " " + friend.LastName,
                                     Address = friend.Address,
                                     Email = friend.Email,
                                     loanHistory = (from lo in _db.Loans
-                                                    where lo.friendID == friend.ID
+                                                    where lo.friendID == friend.ID && lo.bookID == l.bookID
                                                     select lo).ToList()
-                                }).OrderBy(x => x.Name).ToList();
+                                }).Distinct().OrderBy(x => x.Name).ToList();
                 if(users == null){
                     throw new ObjectNotFoundException("No users found");
                 }
@@ -151,7 +151,7 @@ namespace LibraryAPI.Repositories
                             loanHistory = (from l in _db.Loans
                                             where l.friendID == f.ID
                                             select l).ToList()
-                            }).OrderBy(x => x.Name).ToList();
+                            }).Distinct().OrderBy(x => x.Name).ToList();
                 if(users == null){
                     throw new ObjectNotFoundException("No users found");
                 }
@@ -274,7 +274,7 @@ namespace LibraryAPI.Repositories
         /// <summary>
         /// Registers a book to a user with these given ids
         /// </summary>
-        public void AddBookToUser(int userId, int bookId) {
+        public Book AddBookToUser(int userId, int bookId) {
             var user = _db.Friends.SingleOrDefault(u => u.ID == userId);
             var book = _db.Books.SingleOrDefault(b => b.ID == bookId);
 
@@ -293,6 +293,7 @@ namespace LibraryAPI.Repositories
                     }
                 );
             _db.SaveChanges();
+            return book;
         }
 
         /// <summary>
@@ -408,6 +409,7 @@ namespace LibraryAPI.Repositories
                 BookTitle = book.Title,
                 AuthorFirstName = book.FirstName,
                 AuthorLastName = book.LastName,
+                DatePublished = book.DatePublished.ToString(),
                 Rating = rating.Rating
             };
         }
