@@ -164,13 +164,23 @@ namespace LibraryAPI.Repositories
 
         public ReviewViewModel AddReviewByUser(RatingDTO rating, int userID, int bookID)
         {
+            if(rating.Rating > 5 || rating.Rating < 0){
+                throw new RatingException("Rating can only be from 0 - 5");
+            }
+            var user = _friends.SingleOrDefault( f => f.ID == userID);
+            if(user == null){
+                throw new ObjectNotFoundException("User ID not found");
+            }
+            var book = _books.SingleOrDefault( b => b.ID == bookID);
+            if(book == null){
+                throw new ObjectNotFoundException("Book ID not found");
+            }
             var newReview = new Review{
                 friendID = userID,
                 bookID = bookID,
                 Rating = rating.Rating
             };
 
-            var book = _books.Where(x => x.ID == bookID).SingleOrDefault();
             var rat = _reviews.Where(x => x.bookID == bookID).ToList();
             var sum = 0;
             foreach(var x in rat){
@@ -198,6 +208,18 @@ namespace LibraryAPI.Repositories
 
         public void DeleteReviewByUserForBook(int userID, int bookID)
         {
+            var user = _friends.SingleOrDefault(u => u.ID == userID);
+            var book = _books.SingleOrDefault(b => b.ID == bookID);
+            var review = _reviews.SingleOrDefault(r => r.bookID == bookID && r.friendID == userID);
+            if(user == null){
+                throw new ObjectNotFoundException("User with the given ID was not found");
+            }
+            if(book == null){
+                throw new ObjectNotFoundException("Book with the given ID was not found");
+            }
+            if(review == null){
+                throw new RatingException("No review from the user with the given ID for book with the given ID was found");
+            }
             _reviews.Remove(_reviews.FirstOrDefault(x => x.friendID == userID && x.bookID == bookID));
         }
 
@@ -258,12 +280,43 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<ReviewViewModel> GetAllReviewsForAllBooks()
         {
-            throw new System.NotImplementedException();
+            var reviews = (from r in _reviews
+                            select new ReviewViewModel {
+                                BookTitle = (from b in _books
+                                        where b.ID == r.bookID
+                                        select b.Title).SingleOrDefault(),
+                                AuthorFirstName = (from b in _books
+                                        where b.ID == r.bookID
+                                        select b.FirstName).SingleOrDefault(),
+                                AuthorLastName = (from b in _books
+                                        where b.ID == r.bookID
+                                        select b.LastName).SingleOrDefault(),
+                                Rating = r.Rating
+                            }).ToList();
+            if(reviews == null){
+                throw new ObjectNotFoundException("No ratings were found in the database");
+            }
+            return reviews;
         }
 
         public IEnumerable<ReviewViewModel> GetAllReviewsForBook(int bookID)
         {
-            throw new System.NotImplementedException();
+            var book = _books.SingleOrDefault(b => b.ID == bookID);
+            if(book == null){
+                throw new ObjectNotFoundException("Book with the given ID was not found0");
+            }
+            var reviews = (from r in _reviews
+                            where r.bookID == bookID
+                            select new ReviewViewModel {
+                                BookTitle = book.Title,
+                                AuthorFirstName = book.FirstName,
+                                AuthorLastName = book.LastName,
+                                Rating = r.Rating
+                            }).ToList();
+            if(reviews == null){
+                throw new ObjectNotFoundException("No ratings for this book were found in the database");
+            }
+            return reviews;
         }
 
         public IEnumerable<UserViewModel> GetAllUsers(String LoanDate, int LoanDuration)
@@ -357,17 +410,101 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID)
         {
-            throw new System.NotImplementedException();
+            var userid = _friends.SingleOrDefault(x => x.ID == userID);
+            if(userid == null){
+                throw new ObjectNotFoundException("User with the given ID was not found");
+            }
+            var ratedBooks = (from x in _reviews where x.friendID == userID select x).ToList(); //has the user rated any books?
+            var rentedBooks = (from x in _loans where x.friendID == userID select x).ToList();   //has the user read any books?
+            if(ratedBooks.Count() == 0 || rentedBooks.Count() == 0){        
+                // if the user has not rated or read any books we return the 5 top rated books
+                var topRated = (from b in _books
+                                join r in _reviews on b.ID equals r.bookID
+                                where r.Rating > 4
+                                select new RecommendationViewModel {
+                                    Title = b.Title,
+                                    Author = b.FirstName + " " + b.LastName,
+                                    DatePublished = b.DatePublished,
+                                    ISBN = b.ISBN
+                                }).Distinct().OrderBy(x => x.Title).Take(10).ToList();
+                if(topRated == null){
+                    throw new ObjectNotFoundException("cannot find top rated books");
+                }
+                return topRated;
+            }
+            else{         //otherwise we try to return the books by his favourite authors
+                    List<RecommendationViewModel> topRated  = new List<RecommendationViewModel>();
+                    var favAuthors = (from b in _books
+                             join r in _reviews on b.ID equals r.bookID
+                             where r.friendID == userID
+                             select b);
+                foreach(var a in favAuthors)
+                {   
+                    var booksByFavAuthors = (from b in _books
+                                        where a.LastName == b.LastName && a.FirstName == b.FirstName
+                                        && a.Title != b.Title
+                                        select new RecommendationViewModel{
+                                            Title = b.Title,
+                                            Author = b.FirstName + " " + b.LastName,
+                                            DatePublished = b.DatePublished,
+                                            ISBN = b.ISBN
+                                        });
+
+                    foreach(RecommendationViewModel b in booksByFavAuthors){
+                        topRated.Add(b);
+                    }   
+                }
+                if(topRated.Count() == 0){        // there were no more books by the user's favourite author so then we just return top rated books again
+                    topRated = (from b in _books
+                                        join r in _reviews on b.ID equals r.bookID
+                                        join l in _loans on b.ID equals l.bookID
+                                        where r.Rating >= 4 && l.friendID != userID
+                                        select new RecommendationViewModel {
+                                                    Title = b.Title,
+                                                    Author = b.FirstName + " " + b.LastName,
+                                                    DatePublished = b.DatePublished,
+                                                    ISBN = b.ISBN
+                                        }).Distinct().OrderBy(x => x.Title).Take(10).ToList();
+                }
+                return topRated;
+            }
         }
 
         public ReviewViewModel GetReviewByUserForBook(int userID, int bookID)
         {
-            throw new System.NotImplementedException();
+            var user = _friends.SingleOrDefault(u => u.ID == userID);
+            if(user == null){
+                throw new ObjectNotFoundException("User with the given ID was not found");
+            }
+
+            var book = _books.SingleOrDefault(b => b.ID == bookID);
+            if(book == null){
+                throw new ObjectNotFoundException("Book with the given ID was not found");
+            }
+
+            var review = (from r in _reviews 
+                            where r.bookID == bookID && r.friendID == userID
+                            select new ReviewViewModel {
+                                BookTitle = book.Title,
+                                AuthorFirstName = book.FirstName,
+                                AuthorLastName = book.LastName,
+                                Rating = r.Rating,
+                                DatePublished = (from b in _books
+                                                 where b.ID == r.bookID
+                                                 select b.DatePublished).SingleOrDefault().ToString()
+                            }).SingleOrDefault();
+            if(review == null){
+                throw new RatingException("No review by user with the given ID for a book with the given ID has been made");
+            }
+            else{
+                return review;
+            }
         }
 
         public ReviewViewModel GetReviewForBookByUser(int bookID, int userID)
         {
-            throw new System.NotImplementedException();
+            var review = GetReviewByUserForBook(userID, bookID);
+            return review;
         }
 
         public UserViewModel GetUserById(int userId)
@@ -428,12 +565,48 @@ namespace LibraryAPI.Repositories
 
         public Loan UpdateLoan(Loan updatedLoan, int userId, int bookId)
         {
-            throw new System.NotImplementedException();
+            var loan = (_loans.SingleOrDefault(l => l.friendID == userId && l.bookID == bookId));
+            if(loan == null){
+                throw new ObjectNotFoundException("Loan was not found");
+            }
+
+            loan.friendID = updatedLoan.friendID;
+            loan.bookID = updatedLoan.bookID;
+            loan.DateBorrowed = updatedLoan.DateBorrowed;
+            loan.DateReturned = updatedLoan.DateReturned;
+            loan.hasReturned = updatedLoan.hasReturned;
+
+            return loan;
         }
 
         public ReviewViewModel UpdateReviewByUser(RatingDTO rating, int userID, int bookID)
         {
-            throw new System.NotImplementedException();
+            var user = _friends.SingleOrDefault(u => u.ID == userID);
+            var book = _books.SingleOrDefault(b => b.ID == bookID);
+
+            if(user == null){
+                throw new ObjectNotFoundException("User with the given ID was not found");
+            }
+            if(book == null){
+                throw new ObjectNotFoundException("Book with the given ID was not found");
+            }
+
+            var oldReview = (from r in _reviews 
+                             where r.bookID == bookID && r.friendID == userID
+                             select r).SingleOrDefault();
+            if(oldReview == null){
+                throw new RatingException("No review by user with the given ID for a book with the given ID has been made");
+            }
+
+            oldReview.Rating = rating.Rating;
+            
+            var review = new ReviewViewModel {
+                                BookTitle = book.Title,
+                                AuthorFirstName = book.FirstName,
+                                AuthorLastName = book.LastName,
+                                Rating = oldReview.Rating
+                            };
+            return review;
         }
 
         public Friend UpdateUserById(Friend updatedUser, int userId)

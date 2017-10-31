@@ -336,6 +336,7 @@ namespace LibraryAPI.Repositories
             loan.bookID = updatedLoan.bookID;
             loan.DateBorrowed = updatedLoan.DateBorrowed;
             loan.DateReturned = updatedLoan.DateReturned;
+            loan.hasReturned = updatedLoan.hasReturned;
 
             _db.Loans.Update(loan);
             _db.SaveChanges();
