@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LibraryAPI.Services;
 using LibraryAPI.Repositories;
 using LibraryAPI.Models.EntityModels;
+using LibraryAPI.Models.DTOModels;
 
 namespace LibraryAPI.Test
 {
@@ -270,7 +271,7 @@ namespace LibraryAPI.Test
             _repo.AddBookToUser(9,1);
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public void returnBook_validValues()
         {
             /// Arrange
@@ -282,13 +283,328 @@ namespace LibraryAPI.Test
                 DateBorrowed = Convert.ToDateTime("2016-06-02"),
                 hasReturned = false
             };
-            _repo.AddBookToUser(1, 3);
+            var book = _repo.AddBookToUser(1, 3);
             /// Act
             _userService.ReturnBook(1, 3);
-            var book = _bookService.getBookByID(3);
+            /// Assert
+            Assert.IsNotNull(book);
+        }*/
+
+        [TestMethod]
+        public void updateLoan_validValues()
+        {
+            /// Arrange
+            var updateModel = new Loan
+			{
+                bookID = 1,
+                friendID = 1,
+                DateBorrowed = Convert.ToDateTime("2017-11-11"),
+                DateReturned = null,
+                hasReturned = false
+			};
+            /// Act
+            var loan = _repo.UpdateLoan(updateModel, 1, 1);
+
+            /// Assert
+            Assert.AreEqual(loan.bookID, updateModel.bookID);
+            Assert.AreEqual(loan.friendID, updateModel.friendID);
+            Assert.AreEqual(loan.DateBorrowed, updateModel.DateBorrowed);
+            Assert.AreEqual(loan.DateReturned, updateModel.DateReturned);
+            Assert.AreEqual(loan.hasReturned, updateModel.hasReturned);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void updateLoan_invalidIDValues() 
+        {
+            var updateModel = new Loan
+			{
+                bookID = 1,
+                friendID = 1,
+                DateBorrowed = Convert.ToDateTime("2017-11-11"),
+                DateReturned = null,
+                hasReturned = false
+			};
+            /// Act
+            _repo.UpdateLoan(updateModel, 10, 23);
+        }
+
+        [TestMethod]
+        public void getReviewByUserId_valid()
+        {
+            /// Arrange
+            var model = new Review 
+            {
+                ID = 1,
+                bookID = 1,
+                friendID = 1,
+                Rating = 5
+            };
+            /// Act
+            var review = _repo.GetAllReviewsByUser(1);
+            var count = review.Count();
+            /// Assert
+            Assert.IsNotNull(review);
+            Assert.AreEqual(count, 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void getReviewsByUserId_invalidUserID()
+        {
+            /// Arrange
+        
+            /// Act
+             
+            /// Assert
+            _repo.GetAllReviewsByUser(8);
+        }
+
+        [TestMethod]
+        public void getReviewOnBookByUserId_valid()
+        {
+            /// Arrange
+            var model = new Review 
+            {
+                ID = 1,
+                bookID = 1,
+                friendID = 1,
+                Rating = 5
+            };
+            /// Act
+            var review = _repo.GetReviewByUserForBook(1, 1);
+            /// Assert
+            Assert.IsNotNull(review);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void getReviewOnBookByUserId_invalidUserID()
+        {
+            /// Arrange
+        
+            /// Act
+             
+            /// Assert
+            _repo.GetReviewByUserForBook(8, 1);
+        }
+
+        [TestMethod]
+        public void addReviewByUser_validInput()
+        {
+            /// Arrange
+            var rateModel = new RatingDTO
+            {
+                Rating = 1
+            };
+            /// Act
+            _repo.AddReviewByUser(rateModel, 2, 2);
+            var review = _repo.GetReviewByUserForBook(2, 2);
+            /// Assert
+            Assert.IsNotNull(review);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void addReviewByUser_invalidID()
+        {
+            /// Arrange
+            var rateModel = new RatingDTO
+            {
+                Rating = 1
+            };
+            /// Act
             
             /// Assert
-            Assert.IsTrue(book.hasReturned);
+            _repo.AddReviewByUser(rateModel, 7, 2);
+            _repo.AddReviewByUser(rateModel, 2, 7);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RatingException))]
+        public void addReviewByUser_invalidRatingValue()
+        {
+            /// Arrange
+            var rateModel = new RatingDTO
+            {
+                Rating = 10
+            };
+            /// Act
+            
+            /// Assert
+            _repo.AddReviewByUser(rateModel, 2, 2);
+        }
+
+        [TestMethod]
+        public void deleteReview_validValues()
+        {
+            /// Arrange
+            var count = _repo.GetAllReviewsByUser(2).Count();
+            /// Act
+            _repo.DeleteReviewByUserForBook(2, 1);
+            var afterCount = _repo.GetAllReviewsByUser(2).Count();
+            
+            /// Assert
+            Assert.AreEqual(count-1, afterCount);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void deleteReview_invalidIDs()
+        {
+            /// Arrange
+            
+            /// Act
+            
+            /// Assert
+            _repo.DeleteReviewByUserForBook(100, 2);
+            _repo.DeleteReviewByUserForBook(1, 100);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void deleteReview_invalidReviewId()
+        {
+            /// Arrange
+            
+            /// Act
+            
+            /// Assert
+            _repo.DeleteReviewByUserForBook(100, 100);
+        }
+
+        [TestMethod]
+        public void updateReview_validValues()
+        {
+             /// Arrange
+            var rateModel = new RatingDTO
+            {
+                Rating = 1
+            };
+            var review = _repo.GetReviewByUserForBook(1, 1);
+            /// Act
+            var updatedReview = _repo.UpdateReviewByUser(rateModel, 1, 1);
+            /// Assert
+            Assert.AreEqual(review.BookTitle, updatedReview.BookTitle);
+            Assert.AreEqual(rateModel.Rating, updatedReview.Rating);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void updateReview_invalidIDs() 
+        {
+            /// Arrange
+            var rateModel = new RatingDTO
+			{
+                Rating = 1
+			};
+            /// Act
+   
+            /// Assert
+            _repo.UpdateReviewByUser(rateModel, 100, 1);
+            _repo.UpdateReviewByUser(rateModel, 1, 100);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RatingException))]
+        public void updateReview_invalidReview() 
+        {
+            /// Arrange
+            var rateModel = new RatingDTO
+			{
+                Rating = 1
+			};
+            /// Act
+   
+            /// Assert
+            _repo.UpdateReviewByUser(rateModel, 1, 3);
+        }
+
+        [TestMethod]
+        public void GetRecommendationForUser_valid()
+        {
+            /// Arrange
+            /// Act
+            var rec = _repo.GetRecommendationsForUser(1);
+            /// Assert
+            Assert.IsNotNull(rec);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void getRecommendationForUser_invalidUserID()
+        {
+            /// Arrange
+            /// Act
+            /// Assert
+            _repo.GetRecommendationsForUser(10);
+        }
+
+        [TestMethod]
+        public void getAllReviewsForAllBooks_valid()
+        {
+            /// Arrange
+            /// Act
+            var rev = _repo.GetAllReviewsForAllBooks();
+            /// Assert
+            Assert.IsNotNull(rev);
+        }
+
+        // Vill ekki henda Exceptioni ?? 
+        /*[TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void getAllReviewsForAllBooks_noReviewsInDataBase()
+        {
+            /// Arrange
+            _repo.DeleteReviewByUserForBook(1,1);
+            _repo.DeleteReviewByUserForBook(2,1);
+            _repo.DeleteReviewByUserForBook(3,1);
+            _repo.DeleteReviewByUserForBook(3,2);
+            /// Act
+             
+            /// Assert
+            _repo.GetAllReviewsForAllBooks();
+        }*/
+
+        [TestMethod]
+        public void getAllReviewsForBook_valid() 
+        {
+            /// Arrange
+            /// Act
+            var rev = _repo.GetAllReviewsForBook(1);
+            /// Assert
+            Assert.IsNotNull(rev);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void getAllReviewsForBook_invalidID()
+        {
+            /// Arrange
+            /// Act
+            /// Assert
+            _repo.GetAllReviewsForBook(15);
+        }
+
+        [TestMethod]
+        public void getReviewForBookByUser_valid() 
+        {
+            /// Arrange
+            /// Act
+            var rev = _repo.GetReviewForBookByUser(1,2);
+            /// Assert
+            Assert.IsNotNull(rev);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void getReviewForBookByUser_invalidID()
+        {
+            /// Arrange
+            /// Act
+            /// Assert
+            _repo.GetReviewForBookByUser(1,5);
+            _repo.GetReviewForBookByUser(5,1);
         }
     }
 }
