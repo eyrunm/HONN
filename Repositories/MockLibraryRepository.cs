@@ -125,7 +125,7 @@ namespace LibraryAPI.Repositories
                     }
             };
         }
-        public void AddBookToUser(int userId, int bookId)
+        public Book AddBookToUser(int userId, int bookId)
         {
             var bookid = _books.SingleOrDefault(x => x.ID == bookId);
             var userid = _friends.SingleOrDefault(x => x.ID == userId);
@@ -137,6 +137,8 @@ namespace LibraryAPI.Repositories
             }
 
             _loans.Add(new Loan { friendID = userId, bookID = bookId, hasReturned = false });
+            var book = _books.SingleOrDefault(x => x.ID == bookId);
+            return book;
         }
 
         public void AddNewBook(Book newBook)
