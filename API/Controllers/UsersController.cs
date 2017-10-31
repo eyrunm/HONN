@@ -152,7 +152,7 @@ namespace LibraryAPI.Controllers
             }
             try{
                 var book = _userService.AddBookToUser(userID, bookID);
-                return Created(book);
+                return Created(("users/{userID:int}/books/{bookID:int}"), book);
             }
             catch(ObjectNotFoundException e){
                 return StatusCode(412, e.Message);
