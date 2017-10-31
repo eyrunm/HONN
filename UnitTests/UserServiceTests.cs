@@ -27,7 +27,7 @@ namespace LibraryAPI.Test
         }
 
         [TestMethod]
-        public void getListOfUsers()
+        public void getListOfUsers_valid()
         {
             /// Arrange
             ///Act
@@ -37,20 +37,19 @@ namespace LibraryAPI.Test
         }
 
         [TestMethod]
-        public void getListOfUsersByDate()
+        public void getListOfUsersByDate_valid()
         {
             /// Arrange
             String Date = "2015-10-12";
-            //DateTime LoanDate = Convert.ToDateTime(Date);
             ///Act
             var users = _userService.GetAllUsers(Date, 0);
             ///Assert   
             Assert.IsNotNull(users);
         }
         
-        // Virkar ekki ! 
-        /*[TestMethod]
-        public void getListOfUsersWithLoanDuration()
+         
+        [TestMethod]
+        public void getListOfUsersWithLoanDuration_valid()
         {
             /// Arrange
             int LoanDuration = 30;
@@ -58,10 +57,10 @@ namespace LibraryAPI.Test
             var users = _userService.GetAllUsers(null, LoanDuration);
             ///Assert   
             Assert.IsNotNull(users);
-        }*/
+        }
 
         [TestMethod]
-        public void addNewUser_validValues() 
+        public void addNewUser_valid() 
         { 
             var FirstName = "Linda";
             var LastName = "Jóhansdóttir";
@@ -88,7 +87,7 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public void addNewUser_invalidValues() 
+        public void addNewUser_missingValues() 
         {
             /// Arrange
             var model = new Friend
@@ -102,14 +101,13 @@ namespace LibraryAPI.Test
         }
 
         [TestMethod]
-        public void getUserDetailsById_validValues() 
+        public void getUserDetailsById_valid() 
         { 
+            /// Arrange
             var FirstName = "Sigga"; 
             var LastName = "Jóns";
             var Email = "sigga@sigga.is";
             var Address = "laugavegur 1";
-
-            /// Arrange
             /// Act
             var user = _userService.GetUserById(1);
             /// Assert
@@ -121,7 +119,7 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getUserDetailsById_invalidValues() 
+        public void getUserDetailsById_userIdNotValid() 
         {
             /// Arrange
             /// Act
@@ -131,7 +129,7 @@ namespace LibraryAPI.Test
         }
 
         [TestMethod]
-        public void deleteUserById_validValues()
+        public void deleteUserById_valid()
         {
             /// Arrange
             var count = _userService.GetAllUsers(null, 0).Count();
@@ -144,7 +142,7 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void deleteUserById_invalidValues() 
+        public void deleteUserById_userIdNotValid() 
         {
             /// Arrange
             /// Act
@@ -155,7 +153,7 @@ namespace LibraryAPI.Test
         }
 
         [TestMethod]
-        public void updateUserById_validValues() 
+        public void updateUserById_valid() 
         {
             /// Arrange
             var updateModel = new Friend
@@ -166,9 +164,8 @@ namespace LibraryAPI.Test
 			};
             /// Act
             _repo.UpdateUserById(updateModel, 1);
-            /// Assert
             var user = _userService.GetUserById(1);
-
+            /// Assert
             Assert.AreEqual(user.Name, updateModel.FirstName +" "+ updateModel.LastName);
             Assert.AreEqual(user.Email, updateModel.Email);
             Assert.AreEqual(user.Address, updateModel.Address);
@@ -176,21 +173,39 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void updateUserById_invalidValues() 
+        public void updateUserById_missingValuesInBody() 
         {
             /// Arrange
             var updateModel = new Friend
 			{
-                FirstName = "Sigga", LastName = "Sigurjónsdóttir",
+                FirstName = "Sigga", 
+                LastName = "Sigurjónsdóttir",
                 Address = "Austurstræti 10"
 			};
             /// Act
-            _repo.UpdateUserById(updateModel, 4);
+            /// Assert
             _repo.UpdateUserById(updateModel, 1);
         }
 
         [TestMethod]
-        public void getBooksByUserId_validValues() 
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void updateUserById_userIdNotValid() 
+        {
+            /// Arrange
+            var updateModel = new Friend
+			{
+                FirstName = "Sigga", 
+                LastName = "Sigurjónsdóttir",
+                Email = "sigga@sig.is",
+                Address = "Austurstræti 10"
+			};
+            /// Act
+            /// Assert
+            _repo.UpdateUserById(updateModel, 10);
+        }
+
+        [TestMethod]
+        public void getBooksByUserId_valid() 
         {
             /// Arrange
             var userModel = new Friend
@@ -212,17 +227,15 @@ namespace LibraryAPI.Test
             _bookService.AddNewBook(bookModel);
             /// Act
             _userService.AddBookToUser(3, 2);
-            
-            /// Assert
             var books = _userService.GetBooksByUserId(3);
             var count = books.Count();
-
+            /// Assert
             Assert.AreEqual(count, 4);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getBooksByUserId_invalidValues() 
+        public void getBooksByUserId_userIdNotValid() 
         {
             /// Arrange
             /// Act
@@ -231,7 +244,7 @@ namespace LibraryAPI.Test
         }
 
         [TestMethod]
-        public void addBookToUser_validValues()
+        public void addBookToUser_valid()
         {
             /// Arrange
             var userModel = new Friend
@@ -251,28 +264,25 @@ namespace LibraryAPI.Test
             };
             /// Act
             _repo.AddBookToUser(1, 2);
-            /// Assert
             var book = _userService.GetBooksByUserId(1).Last();
-            
+            /// Assert
             Assert.AreEqual(bookModel.Title, book.Title);
             Assert.AreEqual(bookModel.FirstName + " " + bookModel.LastName, book.Author);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void addBookToUser_invalidValues()
+        public void addBookToUser_invalidIds()
         {
             /// Arrange
             /// Act 
-            /// Assert
-            /// Invalid book id    
-            _repo.AddBookToUser(1,9);
-            /// Invalid user id 
-            _repo.AddBookToUser(9,1);
+            /// Assert    
+            _repo.AddBookToUser(1,9); // Invalid bookId
+            _repo.AddBookToUser(9,1); // Invalid userId
         }
 
-        /*[TestMethod]
-        public void returnBook_validValues()
+        [TestMethod]
+        public void returnBook_valid()
         {
             /// Arrange
             var loanModel = new Loan
@@ -283,15 +293,27 @@ namespace LibraryAPI.Test
                 DateBorrowed = Convert.ToDateTime("2016-06-02"),
                 hasReturned = false
             };
-            var book = _repo.AddBookToUser(1, 3);
             /// Act
+            var book = _repo.AddBookToUser(1, 3);
             _userService.ReturnBook(1, 3);
             /// Assert
             Assert.IsNotNull(book);
-        }*/
+        }
 
         [TestMethod]
-        public void updateLoan_validValues()
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void returnBook_invalidIDs()
+        {
+            /// Arrange
+            /// Act
+            /// Assert
+            _userService.ReturnBook(10, 3); // Invalid userId
+            _userService.ReturnBook(3, 10); // Invalid userId
+            _userService.ReturnBook(1, 2);  // Invalid loan
+        }
+
+        [TestMethod]
+        public void updateLoan_valid()
         {
             /// Arrange
             var updateModel = new Loan
@@ -304,7 +326,6 @@ namespace LibraryAPI.Test
 			};
             /// Act
             var loan = _repo.UpdateLoan(updateModel, 1, 1);
-
             /// Assert
             Assert.AreEqual(loan.bookID, updateModel.bookID);
             Assert.AreEqual(loan.friendID, updateModel.friendID);
@@ -315,8 +336,9 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void updateLoan_invalidIDValues() 
+        public void updateLoan_invalidIDs() 
         {
+            /// Arrange
             var updateModel = new Loan
 			{
                 bookID = 1,
@@ -326,6 +348,7 @@ namespace LibraryAPI.Test
                 hasReturned = false
 			};
             /// Act
+            /// Assert          
             _repo.UpdateLoan(updateModel, 10, 23);
         }
 
@@ -350,12 +373,10 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getReviewsByUserId_invalidUserID()
+        public void getReviewsByUserId_userIdNotValid()
         {
             /// Arrange
-        
             /// Act
-             
             /// Assert
             _repo.GetAllReviewsByUser(8);
         }
@@ -379,18 +400,17 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getReviewOnBookByUserId_invalidUserID()
+        public void getReviewOnBookByUserId_invalidIDs()
         {
             /// Arrange
-        
             /// Act
-             
             /// Assert
-            _repo.GetReviewByUserForBook(8, 1);
+            _repo.GetReviewByUserForBook(8, 1); // Invalid userId
+            _repo.GetReviewByUserForBook(1, 8); // Invalid bookId
         }
 
         [TestMethod]
-        public void addReviewByUser_validInput()
+        public void addReviewByUser_valid()
         {
             /// Arrange
             var rateModel = new RatingDTO
@@ -406,7 +426,7 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void addReviewByUser_invalidID()
+        public void addReviewByUser_invalidIDs()
         {
             /// Arrange
             var rateModel = new RatingDTO
@@ -414,10 +434,9 @@ namespace LibraryAPI.Test
                 Rating = 1
             };
             /// Act
-            
             /// Assert
-            _repo.AddReviewByUser(rateModel, 7, 2);
-            _repo.AddReviewByUser(rateModel, 2, 7);
+            _repo.AddReviewByUser(rateModel, 7, 2); // Invalid userId
+            _repo.AddReviewByUser(rateModel, 2, 7); // Invalid bookId
         }
 
         [TestMethod]
@@ -430,51 +449,45 @@ namespace LibraryAPI.Test
                 Rating = 10
             };
             /// Act
-            
             /// Assert
             _repo.AddReviewByUser(rateModel, 2, 2);
         }
 
         [TestMethod]
-        public void deleteReview_validValues()
+        public void deleteReviewByUserForBook_valid()
         {
             /// Arrange
             var count = _repo.GetAllReviewsByUser(2).Count();
             /// Act
             _repo.DeleteReviewByUserForBook(2, 1);
             var afterCount = _repo.GetAllReviewsByUser(2).Count();
-            
             /// Assert
             Assert.AreEqual(count-1, afterCount);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void deleteReview_invalidIDs()
+        public void deleteReviewByUserForBook_invalidIDs()
         {
             /// Arrange
-            
             /// Act
-            
             /// Assert
-            _repo.DeleteReviewByUserForBook(100, 2);
-            _repo.DeleteReviewByUserForBook(1, 100);
+            _repo.DeleteReviewByUserForBook(100, 2); // Invalid userId
+            _repo.DeleteReviewByUserForBook(1, 100); // Invalid bookId
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ObjectNotFoundException))]
-        public void deleteReview_invalidReviewId()
+        [ExpectedException(typeof(RatingException))]
+        public void deleteReviewByUserForBook_invalidReviewId()
         {
             /// Arrange
-            
             /// Act
-            
             /// Assert
-            _repo.DeleteReviewByUserForBook(100, 100);
+            _repo.DeleteReviewByUserForBook(3, 3);
         }
 
         [TestMethod]
-        public void updateReview_validValues()
+        public void updateReviewByUser_valid()
         {
              /// Arrange
             var rateModel = new RatingDTO
@@ -491,7 +504,7 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void updateReview_invalidIDs() 
+        public void updateReviewByUser_invalidIDs() 
         {
             /// Arrange
             var rateModel = new RatingDTO
@@ -499,15 +512,14 @@ namespace LibraryAPI.Test
                 Rating = 1
 			};
             /// Act
-   
             /// Assert
-            _repo.UpdateReviewByUser(rateModel, 100, 1);
-            _repo.UpdateReviewByUser(rateModel, 1, 100);
+            _repo.UpdateReviewByUser(rateModel, 100, 1); // Invalid userId
+            _repo.UpdateReviewByUser(rateModel, 1, 100); // Invalid bookId
         }
 
         [TestMethod]
         [ExpectedException(typeof(RatingException))]
-        public void updateReview_invalidReview() 
+        public void updateReviewByUser_invalidReviewId() 
         {
             /// Arrange
             var rateModel = new RatingDTO
@@ -515,13 +527,12 @@ namespace LibraryAPI.Test
                 Rating = 1
 			};
             /// Act
-   
             /// Assert
-            _repo.UpdateReviewByUser(rateModel, 1, 3);
+            _repo.UpdateReviewByUser(rateModel, 1, 3); // Invalid reviewId
         }
 
         [TestMethod]
-        public void GetRecommendationForUser_valid()
+        public void getRecommendationForUser_valid()
         {
             /// Arrange
             /// Act
@@ -532,7 +543,7 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getRecommendationForUser_invalidUserID()
+        public void getRecommendationForUser_invalidUserId()
         {
             /// Arrange
             /// Act
@@ -551,7 +562,7 @@ namespace LibraryAPI.Test
         }
 
         // Vill ekki henda Exceptioni ?? 
-        /*[TestMethod]
+        [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
         public void getAllReviewsForAllBooks_noReviewsInDataBase()
         {
@@ -561,10 +572,9 @@ namespace LibraryAPI.Test
             _repo.DeleteReviewByUserForBook(3,1);
             _repo.DeleteReviewByUserForBook(3,2);
             /// Act
-             
             /// Assert
             _repo.GetAllReviewsForAllBooks();
-        }*/
+        }
 
         [TestMethod]
         public void getAllReviewsForBook_valid() 
@@ -578,7 +588,7 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getAllReviewsForBook_invalidID()
+        public void getAllReviewsForBook_bookIdNotValid()
         {
             /// Arrange
             /// Act
@@ -598,13 +608,14 @@ namespace LibraryAPI.Test
 
         [TestMethod]
         [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getReviewForBookByUser_invalidID()
+        public void getReviewForBookByUser_invalidIDs()
         {
             /// Arrange
             /// Act
             /// Assert
-            _repo.GetReviewForBookByUser(1,5);
-            _repo.GetReviewForBookByUser(5,1);
+            _repo.GetReviewForBookByUser(1,5); // Invalid bookId
+            _repo.GetReviewForBookByUser(5,1); // Invalid userId
         }
+
     }
 }
