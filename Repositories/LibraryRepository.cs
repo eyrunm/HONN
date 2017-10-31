@@ -554,6 +554,10 @@ namespace LibraryAPI.Repositories
         /// (Some authors have only written one book - so then we just return top rated books again) 
         /// </summary>
         public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID){
+            var userid = _db.Friends.SingleOrDefault(x => x.ID == userID);
+            if(userid == null){
+                throw new ObjectNotFoundException("User with the given ID was not found");
+            }
             var ratedBooks = (from x in _db.Reviews where x.friendID == userID select x).ToList(); //has the user rated any books?
             var rentedBooks = (from x in _db.Loans where x.friendID == userID select x).ToList();   //has the user read any books?
             if(ratedBooks.Count() == 0 || rentedBooks.Count() == 0){        
