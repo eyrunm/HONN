@@ -10,7 +10,7 @@ namespace LibraryAPI.Services
     {
         IEnumerable<BookViewModel> GetAllBooks (DateTime? LoanDate);
         BookDetailsViewModel getBookByID(int book_id);
-        void AddNewBook(Book newBook);
+        Book AddNewBook(Book newBook);
         void DeleteBookByID(int bookID);
         Book UpdateBookByID(Book updatedBook, int bookID);
 

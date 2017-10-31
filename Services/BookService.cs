@@ -15,9 +15,15 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
-        public void AddNewBook(Book newBook)
+        public Book AddNewBook(Book newBook)
         {
-            _repo.AddNewBook(newBook);
+            var book = _repo.AddNewBook(newBook);
+            if(book != null){
+                return book;
+            }
+            else{
+                return null;
+            }
         }
 
         public void DeleteBookByID(int bookID)

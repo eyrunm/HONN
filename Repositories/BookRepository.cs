@@ -79,7 +79,7 @@ namespace LibraryAPI.Repositories
 	/// Adds a new book to the database
     /// ADMIN function
 	/// </summary>
-        public void AddNewBook(Book newBook){
+        public Book AddNewBook(Book newBook){
             if(newBook == null){
                 throw new ObjectNotFoundException("Book not valid");
             }
@@ -92,6 +92,12 @@ namespace LibraryAPI.Repositories
             };
             _db.Add(book);
             _db.SaveChanges();
+            if(book != null){
+                return book;
+            }
+            else{
+                throw new ObjectNotFoundException("Book not valid");
+            }
         }
 
     /// <summary>
