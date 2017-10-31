@@ -127,6 +127,15 @@ namespace LibraryAPI.Repositories
         }
         public void AddBookToUser(int userId, int bookId)
         {
+            var bookid = _books.SingleOrDefault(x => x.ID == bookId);
+            var userid = _friends.SingleOrDefault(x => x.ID == userId);
+            if(bookid == null) {
+                throw new ObjectNotFoundException("Not valid book id");
+            }
+            if(userid == null) {
+                throw new ObjectNotFoundException("Not valid user id");
+            }
+
             _loans.Add(new Loan { friendID = userId, bookID = bookId, hasReturned = false });
         }
 
@@ -327,7 +336,21 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<BookViewModel> GetBooksByUserId(int userId)
         {
-            throw new System.NotImplementedException();
+            var userid = _friends.SingleOrDefault(x => x.ID == userId);
+            if(userid == null) {
+                throw new ObjectNotFoundException("not valid user id");
+            }
+            else {
+                var books = (from b in _books
+                             join l in _loans on b.ID equals l.bookID
+                             where l.friendID == userId
+                             select new BookViewModel{
+                                Title = b.Title,
+                                Author = b.FirstName + " " + b.LastName,
+                                DatePublished = b.DatePublished
+                        }).ToList();
+                return books;
+            }
         }
 
         public IEnumerable<RecommendationViewModel> GetRecommendationsForUser(int userID)
@@ -373,7 +396,14 @@ namespace LibraryAPI.Repositories
 
         public void ReturnBook(int userId, int bookId)
         {
-            throw new System.NotImplementedException();
+            var userid = _friends.SingleOrDefault(x => x.ID == userId);
+            var bookid = _books.SingleOrDefault(x => x.ID == bookId);
+            var loan = _loans.SingleOrDefault(x => x.friendID == userId && x.bookID == bookId);
+            if(userid == null || bookid == null || loan == null) {
+                throw new ObjectNotFoundException("Invalid Id, check if userId and bookId are correct");
+            }
+            loan.hasReturned = true;
+            loan.DateReturned = DateTime.Now;            
         }
 
         public Book UpdateBookByID(Book updatedBook, int bookID)
