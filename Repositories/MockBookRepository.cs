@@ -125,7 +125,8 @@ namespace LibraryAPI.Repositories
             return book;
         }
 
-        public ICollection<Book> GetBooks(){
+        public ICollection<Book> GetBooks()
+        {
             return _books;
         }
     }

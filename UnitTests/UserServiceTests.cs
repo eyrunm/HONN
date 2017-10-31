@@ -12,13 +12,17 @@ namespace LibraryAPI.Test
     public class UserServiceTests
     {
         private IUserService _userService;
+        private IBookService _bookService;
         private ILibraryRepository _repo;
+        private IBookRepository _bookRepo;
 
         [TestInitialize]
         public void Setup(){
             /// This method is executed before every single test
             _repo = new MockLibraryRepository();
+            _bookRepo = new MockBookRepository();
             _userService = new UserService(_repo);
+            _bookService = new BookService(_bookRepo);
         }
 
         [TestMethod]
@@ -182,6 +186,109 @@ namespace LibraryAPI.Test
             /// Act
             _repo.UpdateUserById(updateModel, 4);
             _repo.UpdateUserById(updateModel, 1);
+        }
+
+        [TestMethod]
+        public void getBooksByUserId_validValues() 
+        {
+            /// Arrange
+            var userModel = new Friend
+			{
+				ID = 5, 
+                FirstName = "Linda", LastName = "Jóhansdóttir",
+                Email = "linda@linda.is",
+                Address = "Hæðarsel 1"
+			};
+            var bookModel = new Book
+            {
+                ID = 4, 
+                Title ="The Hobbit", 
+                FirstName = "J R R", LastName = "Tolkien", 
+                DatePublished = Convert.ToDateTime("21-09-1937"), 
+                ISBN = "0000000000"
+            };
+            _userService.AddNewUser(userModel);
+            _bookService.AddNewBook(bookModel);
+            /// Act
+            _userService.AddBookToUser(3, 2);
+            
+            /// Assert
+            var books = _userService.GetBooksByUserId(3);
+            var count = books.Count();
+
+            Assert.AreEqual(count, 4);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void getBooksByUserId_invalidValues() 
+        {
+            /// Arrange
+            /// Act
+            /// Assert
+            _repo.GetBooksByUserId(10);
+        }
+
+        [TestMethod]
+        public void addBookToUser_validValues()
+        {
+            /// Arrange
+            var userModel = new Friend
+			{
+				ID = 1, 
+                FirstName = "Sigga", LastName = "Jóns",
+                Email = "sigga@sigga.is",
+                Address = "laugavegur 1"
+			};
+            var bookModel = new Book
+            {
+                ID = 2, 
+                Title ="Harry Potter and the chamber of secrets", 
+                FirstName = "J K", LastName = "Rowling", 
+                DatePublished = Convert.ToDateTime("02-07-1998"), 
+                ISBN = "234567890"
+            };
+            /// Act
+            _repo.AddBookToUser(1, 2);
+            /// Assert
+            var book = _userService.GetBooksByUserId(1).Last();
+            
+            Assert.AreEqual(bookModel.Title, book.Title);
+            Assert.AreEqual(bookModel.FirstName + " " + bookModel.LastName, book.Author);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ObjectNotFoundException))]
+        public void addBookToUser_invalidValues()
+        {
+            /// Arrange
+            /// Act 
+            /// Assert
+            /// Invalid book id    
+            _repo.AddBookToUser(1,9);
+            /// Invalid user id 
+            _repo.AddBookToUser(9,1);
+        }
+
+        [TestMethod]
+        public void returnBook_validValues()
+        {
+            /// Arrange
+            var loanModel = new Loan
+            {
+                ID = 6,
+                bookID = 3,
+                friendID = 1,
+                DateBorrowed = Convert.ToDateTime("2016-06-02"),
+                hasReturned = false
+            };
+            _repo.AddBookToUser(1, 3);
+            /// Act
+            _userService.ReturnBook(1, 3);
+            var book = _bookService.getBookByID(3);
+            
+            /// Assert
+            Assert.IsTrue(book.hasReturned);
         }
     }
 }
