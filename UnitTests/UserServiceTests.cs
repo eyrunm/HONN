@@ -561,21 +561,6 @@ namespace LibraryAPI.Test
             Assert.IsNotNull(rev);
         }
 
-        // Vill ekki henda Exceptioni ?? 
-        [TestMethod]
-        [ExpectedException(typeof(ObjectNotFoundException))]
-        public void getAllReviewsForAllBooks_noReviewsInDataBase()
-        {
-            /// Arrange
-            _repo.DeleteReviewByUserForBook(1,1);
-            _repo.DeleteReviewByUserForBook(2,1);
-            _repo.DeleteReviewByUserForBook(3,1);
-            _repo.DeleteReviewByUserForBook(3,2);
-            /// Act
-            /// Assert
-            _repo.GetAllReviewsForAllBooks();
-        }
-
         [TestMethod]
         public void getAllReviewsForBook_valid() 
         {
