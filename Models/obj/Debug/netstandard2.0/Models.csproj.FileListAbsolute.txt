@@ -22,3 +22,11 @@ C:\Users\AnítaSól\Desktop\Skóli\5.önn\Hönnun og smíði hugbúnaðar\Lokave
 C:\Users\AnítaSól\Desktop\Skóli\5.önn\Hönnun og smíði hugbúnaðar\Lokaverkefni\HONN\Models\obj\Debug\netstandard2.0\Models.AssemblyInfo.cs
 C:\Users\AnítaSól\Desktop\Skóli\5.önn\Hönnun og smíði hugbúnaðar\Lokaverkefni\HONN\Models\obj\Debug\netstandard2.0\Models.dll
 C:\Users\AnítaSól\Desktop\Skóli\5.önn\Hönnun og smíði hugbúnaðar\Lokaverkefni\HONN\Models\obj\Debug\netstandard2.0\Models.pdb
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\bin\Debug\netstandard2.0\Models.deps.json
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\bin\Debug\netstandard2.0\Models.dll
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\bin\Debug\netstandard2.0\Models.pdb
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\obj\Debug\netstandard2.0\Models.csproj.CoreCompileInputs.cache
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\obj\Debug\netstandard2.0\Models.AssemblyInfoInputs.cache
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\obj\Debug\netstandard2.0\Models.AssemblyInfo.cs
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\obj\Debug\netstandard2.0\Models.dll
+C:\Users\Notandi\Documents\HR\Hönnun og smíði hugbúnaðar\Assignment2\HONN\Models\obj\Debug\netstandard2.0\Models.pdb
