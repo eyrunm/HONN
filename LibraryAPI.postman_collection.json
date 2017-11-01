@@ -1,0 +1,1141 @@
+{
+	"info": {
+		"name": "LibraryAPI",
+		"_postman_id": "3674b1cf-33ad-45d0-598e-529a066d19a6",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "BookTests",
+			"description": "",
+			"item": [
+				{
+					"name": "Get All Books  -  http://localhost:5000/api/books/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain a book with this title: Automated tangible data-warehouse\", function() {\r",
+									"   pm.expect(pm.response.text()).to.include(\"Automated tangible data-warehouse\");\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var len = data.length;\r",
+									"tests[\"should be more than 1000 books\"] = len >= 1000;\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/books/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"books",
+								""
+							]
+						},
+						"description": "Returns all books in the database"
+					},
+					"response": []
+				},
+				{
+					"name": "Add new book     -    http://localhost:5000/api/books/",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is 201 - created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain a book with this title: 1984\", function() {\r",
+									"   pm.expect(pm.response.text()).to.include(\"1984\");\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var authorLastName = data.lastName;\r",
+									"tests[\"The author's last name is King\"] = authorLastName = \"King\"\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"Title\" : \"1984\",\r\n     \"FirstName\": \"Stepphen \",\r\n     \"LastName\": \"King\",\r\n     \"DatePublished\" : \"1988-11-01\",\r\n     \"ISBN\" : \"123456789-X\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/books/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"books",
+								""
+							]
+						},
+						"description": "creates a new book"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By BookID       -         http://localhost:5000/api/books/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is Ok\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time should be less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should return the correct book\", function () {\r",
+									"    var data = JSON.parse(responseBody);\r",
+									"    pm.expect(data.title).to.eql(\"Automated tangible data-warehouse\");\r",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/books/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"books",
+								"1"
+							]
+						},
+						"description": "returns the book with the given bookID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book            -               http://localhost:5000/api/books/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain a book with the first name of author = Stephen\", function() {\r",
+									"    var data = JSON.parse(responseBody);\r",
+									"    var authorFirstName = data.firstName;\r",
+									"    tests[\"The author's first name is Stephen\"] = authorFirstName = \"Stephen\"\r",
+									"});\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"Title\" : \"1894\",\r\n     \"FirstName\": \"Stephen\",\r\n     \"LastName\": \"King\",\r\n     \"DatePublished\" : \"1988-11-01\",\r\n     \"ISBN\" : \"123456789-X\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/books/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"books",
+								"2"
+							]
+						},
+						"description": "Update the new book"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a book   -   http://localhost:5000/api/books/2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is 204 - no content\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/books/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"books",
+								"2"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get book which has been deleted  -   http://localhost:5000/api/books/1003",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response should contain the message: Book ID not found\", function() {",
+									"        pm.expect(pm.response.text()).to.include(\"Book ID not found\");",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/books/1008",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"books",
+								"1008"
+							]
+						},
+						"description": "try to fetch the book that was just deleted"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserTests",
+			"description": "",
+			"item": [
+				{
+					"name": "Get All Users -  http://localhost:5000/api/users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain a persin with this last name: Heriberto\", function() {\r",
+									"   pm.expect(pm.response.text()).to.include(\"Heriberto\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain at least 10 users\", function() {\r",
+									"    var data = JSON.parse(responseBody);\r",
+									"    var len = data.length;\r",
+									"    console.log(len);\r",
+									"    tests[\"should be more than 10 users\"] = len >= 10;\r",
+									"});\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Users are always at least 100"
+					},
+					"response": []
+				},
+				{
+					"name": "Post new User     -          http://localhost:5000/api/users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Returns 201 - created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"tests[\"Status code name has string\"] = responseCode.name.has(\"Created\");\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var userFirstName = data.firstName;\r",
+									"console.log(userFirstName);\r",
+									"tests[\"The user's first name is John\"] = userFirstName = \"John\"\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var userLastName = data.lastName;\r",
+									"console.log(userLastName);\r",
+									"tests[\"The user's last name is Johnson\"] = userLastName = \"Johnson\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"FirstName\": \"John \",\r\n     \"LastName\": \"Johnsson\",\r\n     \"Email\" : \"john@john.com\",\r\n     \"Address\" : \"Johnson's Street 1\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By UserID     -           http://localhost:5000/api/users/1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is Ok\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time should be less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should return the correct user\", function () {\r",
+									"    var data = JSON.parse(responseBody);\r",
+									"    console.log(data);\r",
+									"    pm.expect(data.name).to.eql(\"Heriberto Langforth\");\r",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						},
+						"description": "returns the user with the given ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User       -                http://localhost:5000/api/users/101",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Returns 201 - created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"tests[\"Status code name has string\"] = responseCode.name.has(\"Created\");\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var userFirstName = data.firstName;\r",
+									"tests[\"The user's first name is John J\"] = userFirstName = \"John J\"\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var userLastName = data.lastName;\r",
+									"tests[\"The user's first name is Johnson\"] = userLastName = \"Johnson\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"FirstName\": \"John J\",\r\n     \"LastName\": \"Johnsson\",\r\n     \"Email\" : \"john@john.com\",\r\n     \"Address\" : \"Johnson's Street 1\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users/101",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"101"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the user just created      -             http://localhost:5000/api/users/101",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is 204 - no content\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users/101",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"101"
+							]
+						},
+						"description": "Removes the user we just created from the database"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all books user has rented -   http://localhost:5000/api/users/1/books",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is Ok\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time should be less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should return the correct book\", function () {\r",
+									"    var data = JSON.parse(responseBody);\r",
+									"    pm.expect(data[0].title).to.eql(\"Switchable tangible frame\");\r",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"books"
+							]
+						},
+						"description": "Returns all books the user with userID 1 has read"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Loan To User          -   http://localhost:5000/api/users/1/books/55",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 201 - created\", function () {\r",
+									"  pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time should be less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain book ID being rented out\", function () {\r",
+									"    var data = JSON.parse(responseBody);\r",
+									"    pm.expect(data.id).to.eql(55);\r",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/books/55",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"books",
+								"55"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Return book not rented by user     -           http://localhost:5000/api/users/2/books/55",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response should contain the message: Loan was not found\", function() {",
+									"        pm.expect(pm.response.text()).to.include(\"Loan was not found\");",
+									"});",
+									"",
+									"pm.test(\"Response should return status code 404\", function() {",
+									"        pm.response.to.have.status(404);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/2/books/55",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"2",
+								"books",
+								"55"
+							]
+						},
+						"description": "Try to return a book which hasn't been rented by this user"
+					},
+					"response": []
+				},
+				{
+					"name": "Return a book rented by user         -       http://localhost:5000/api/users/1/books/55",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is 204 - no content\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/books/55",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"books",
+								"55"
+							]
+						},
+						"description": "Return a book rented by this user"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Loan -  http://localhost:5000/api/users/1/books/55",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Returns Ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var userID = data.friendID;\r",
+									"tests[\"The user ID matches previous userID\"] = userID = 1;\r",
+									"\r",
+									"var bookID = data.bookID;\r",
+									"tests[\"The user ID matches previous bookID\"] = userLastName = 55;\r",
+									"\r",
+									"var dateBorrowed = data.dataBorrowed;\r",
+									"tests[\"The date of the loan has been changed\"] = dateBorrowed = \"2017-10-31\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"friendID\":\"1\",\n    \"bookID\": \"55\",\n    \"DateBorrowed\": \"2017-10-30\",\n    \"hasReturned\": false\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/books/55",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"books",
+								"55"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ReviewTests",
+			"description": "",
+			"item": [
+				{
+					"name": "Add rating to book which user has read    -    http://localhost:5000/api/users/86/229",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain a book with this title: Switchable tangible frame\", function() {\r",
+									"   pm.expect(pm.response.text()).to.include(\"Switchable tangible frame\");\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var rating = data.rating;\r",
+									"tests[\"The rating should equal 4.5\"] = rating = 4.5"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Rating\": \"4.5\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/reviews/500",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"reviews",
+								"500"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Return reviews for user      -    http://localhost:5000/api/users/1/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"response is ok\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a valid JSON body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"});",
+									"",
+									"pm.test(\"Response time should be less than 200ms\", function () {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response should contain a book with this title: Harry Potter and the goblet of fire\", function(){",
+									"   pm.expect(pm.response.text()).to.include(\"Harry Potter and the goblet of fire\");",
+									"});",
+									"",
+									"pm.test(\"Response should contain a book with this title: Harry Potter and the Prisoner of Azkaban\", function(){",
+									"   pm.expect(pm.response.text()).to.include(\"Harry Potter and the Prisoner of Azkaban\");",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/reviews",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"reviews"
+							]
+						},
+						"description": "user has read first two Harry Potter books"
+					},
+					"response": []
+				},
+				{
+					"name": "return book review by user for book - http://localhost:5000/api/users/1/reviews/500",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var rating = data.rating;\r",
+									"tests[\"The rating should equal 4.5\"] = rating = 4.5"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/reviews/500",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"reviews",
+								"500"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Review book user has already reviewed   -  http://localhost:5000/api/users/1/reviews/500",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response should contain the message: User has already Rated this book - please update review\", function() {",
+									"        pm.expect(pm.response.text()).to.include(\"User has already Rated this book - please update review\");",
+									"});",
+									"",
+									"pm.test(\"Response should return status code 404\", function() {",
+									"        pm.response.to.have.status(404);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/reviews/500",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"reviews",
+								"500"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review by user for book - http://localhost:5000/api/users/1/reviews/500",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain a book with this title: Switchable tangible frame\", function() {\r",
+									"   pm.expect(pm.response.text()).to.include(\"Switchable tangible frame\");\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody);\r",
+									"var rating = data.rating;\r",
+									"tests[\"The rating should equal 4.6\"] = rating = 4.6"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Rating\": \"4.6\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/reviews/500",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"reviews",
+								"500"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Delete review by user for book - http://localhost:5000/api/users/1/reviews/500",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is 204 - no content\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/users/1/reviews/500",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"reviews",
+								"500"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Reviews for all books    -    http://localhost:5000/api/book/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Response is ok\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid JSON body\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"});\r",
+									"    var data = JSON.parse(responseBody);\r",
+									"    var len = data.length;\r",
+									"    tests[\"should be more than 10 reviews\"] = len >= 10;\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:5000/api/book/reviews",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"book",
+								"reviews"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
